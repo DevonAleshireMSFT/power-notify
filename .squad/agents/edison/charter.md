@@ -12,7 +12,7 @@
 ## What I Own
 
 - The pnfy_* entity definitions, columns, keys, and relationships
-- `schema/pnfy-columns.csv`, `schema/pnfy-keys.csv`, `schema/pnfy-relationships.csv` and the `tools/Build-PnfySchema.ps1` generator
+- `schema/pnfy-columns.csv`, `schema/pnfy-keys.csv`, `schema/pnfy-relationships.csv` and the `build/Build-PnfySchema.ps1` generator
 - Option sets, forms, saved queries, and solution component wiring for entities
 - Keeping the schema CSVs and the exported solution in sync
 

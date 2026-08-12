@@ -36,7 +36,7 @@ Declare schema in compact CSV manifests and expand them into solution XML with a
 | `schema/pnfy-keys.csv` | Alternate keys and their column sets |
 | `schema/pnfy-secured-columns.csv` | Columns requiring column security |
 
-`tools/Build-PnfySchema.ps1` expands these into the unpacked solution source. The exported solution
+`build/Build-PnfySchema.ps1` expands these into the unpacked solution source. The exported solution
 XML remains the source of truth; the generator is a build tool, not a runtime dependency.
 
 ## Consequences

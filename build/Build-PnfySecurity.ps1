@@ -14,7 +14,7 @@
     Additive and idempotent: an existing role file or profile is skipped, never rewritten.
 
 .EXAMPLE
-    ./tools/Build-PnfySecurity.ps1 -OnlyRole 'Power Notify Reader'
+    ./build/Build-PnfySecurity.ps1 -OnlyRole 'Power Notify Reader'
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(

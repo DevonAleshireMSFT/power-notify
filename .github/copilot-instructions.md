@@ -58,3 +58,52 @@ If you make a decision that affects other team members, write it to:
 .squad/decisions/inbox/copilot-{brief-slug}.md
 ```
 The Scribe will merge it into the shared decisions file.
+
+<!-- BEGIN AI CONTEXT FRAMEWORK MANAGED BLOCK -->
+# GitHub Copilot Instructions
+#
+# This file is automatically read by GitHub Copilot in every chat session
+# in this repository. Keep it short and point to durable context.
+
+## Project Context
+
+Before answering questions or generating code in this repository, read `.ai/context.md`.
+It defines what this product is, its current state, and the rules that always apply.
+
+## Product Decisions
+
+For decision rationale, constraints, and trade-offs, consult Product ADRs in `.ai/adr/`.
+ADR paths use `.ai/adr/NNNN-title.md`.
+
+If this repo also uses Squad, do not treat `.squad/decisions.md` as the product decision source.
+Squad working state may link to ADRs, but Product ADRs are authoritative for product decisions.
+
+## Rules That Always Apply
+
+- Follow all rules listed under `Key Rules` in `.ai/context.md`.
+- Do not rename, remove, or modify anything listed under `Known Gotchas` without explicit confirmation.
+- When a change depends on a product decision, check `.ai/adr/` before recommending an approach.
+- If a new durable product decision is made, recommend creating a Product ADR in `.ai/adr/`.
+
+## Where to Find More Context
+
+| Topic | File |
+|-------|------|
+| Product overview and rules | `.ai/context.md` |
+| Product decision rationale | `.ai/adr/` |
+| Domain terminology | `.ai/domain.md` *(optional)* |
+| Data model and schema | `.ai/data-model.md` *(optional)* |
+| Security roles and access constraints | `.ai/security.md` *(optional)* |
+| Pipeline and deployment standards | `.ai/pipelines.md` *(optional)* |
+
+## What You Must Never Do
+
+- Generate, suggest, or output credentials, connection strings, API keys, or secrets.
+- Output or log Personally Identifiable Information (PII).
+- Bypass security roles or access patterns defined in `.ai/security.md`.
+- Duplicate product ADR content into `.squad/decisions.md` when Squad is present.
+
+## Confirming Context at Session Start
+
+When a user starts a new conversation, confirm you have read `.ai/context.md` by briefly stating the project name and one or two active Key Rules.
+<!-- END AI CONTEXT FRAMEWORK MANAGED BLOCK -->

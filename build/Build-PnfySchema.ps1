@@ -12,7 +12,7 @@
     and are authored separately.
 
 .EXAMPLE
-    ./tools/Build-PnfySchema.ps1 -WhatIf
+    ./build/Build-PnfySchema.ps1 -WhatIf
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(

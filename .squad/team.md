@@ -59,6 +59,6 @@
 
 - **Project:** power-notify — a Microsoft Power Platform / Dataverse notification engine
 - **Owner:** Devon Aleshire
-- **Stack:** Dataverse solution (PowerNotifyCore), C# plugins, pnfy_* entities, CSV-driven schema (schema/pnfy-*.csv) via tools/Build-PnfySchema.ps1, solution ALM
+- **Stack:** Dataverse solution (PowerNotifyCore), C# plugins, pnfy_* entities, CSV-driven schema (schema/pnfy-*.csv) via build/Build-PnfySchema.ps1, solution ALM
 - **Casting universe:** Famous Artists and Inventors (user-requested)
 - **Created:** 2026-08-12

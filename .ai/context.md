@@ -81,7 +81,7 @@ Delivery is **asynchronous**: the caller receives acceptance, not a delivery out
 - **Always pass `--environment 24a9495b-1431-e2e3-8a43-850300d8ae50` explicitly on every `pac`
   command.** The ambient auth profile has silently reverted mid-session and sent an import to the
   wrong environment. Do not rely on `pac org select` persisting.
-- **Schema changes go through the manifests in `schema/*.csv` and `tools/Build-PnfySchema.ps1`,
+- **Schema changes go through the manifests in `schema/*.csv` and `build/Build-PnfySchema.ps1`,
   not hand-edited solution XML.** The generator is additive and idempotent.
 - **Validate one slice end to end before generating in bulk.** Bulk generation of solution XML has
   repeatedly cost several failed import cycles; one validated example costs one.
@@ -172,6 +172,6 @@ unpacked, inspected, and committed before it becomes authoritative.
 | Lookups and cascade behaviour | `../schema/pnfy-relationships.csv` |
 | Alternate keys | `../schema/pnfy-keys.csv` |
 | Column security | `../schema/pnfy-secured-columns.csv` |
-| Schema generator | `../tools/Build-PnfySchema.ps1` |
+| Schema generator | `../build/Build-PnfySchema.ps1` |
 | Unpacked solution source | `../solutions/PowerNotifyCore/` |
-| Legacy solution (reference only) | `../NotificationGenerator_1_0_0_3/` |
+| Legacy solution (reference only) | `../legacy/NotificationGenerator_1_0_0_3/` |
