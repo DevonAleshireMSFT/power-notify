@@ -6,8 +6,52 @@
         <EntityName>pnfy_notificationtemplate</EntityName>
         <AttributeName>pnfy_bodyhtml</AttributeName>
         <CanRead>4</CanRead>
+        <CanUpdate>4</CanUpdate>
+        <CanCreate>4</CanCreate>
+        <CanReadUnmasked>0</CanReadUnmasked>
+      </FieldPermission>
+      <FieldPermission>
+        <EntityName>pnfy_notificationtemplate</EntityName>
+        <AttributeName>pnfy_cardjson</AttributeName>
+        <CanRead>4</CanRead>
+        <CanUpdate>4</CanUpdate>
+        <CanCreate>4</CanCreate>
+        <CanReadUnmasked>0</CanReadUnmasked>
+      </FieldPermission>
+    </FieldPermissions>
+  </FieldSecurityProfile>
+  <FieldSecurityProfile name="Power Notify Rendered Content" description="Rendered notification bodies retained in payload snapshots. Support read-only." fieldsecurityprofileid="{1514cb62-56b9-49cb-b757-3ce6feb8f701}">
+    <FieldPermissions>
+      <FieldPermission>
+        <EntityName>pnfy_payloadsnapshot</EntityName>
+        <AttributeName>pnfy_renderedbody</AttributeName>
+        <CanRead>4</CanRead>
         <CanUpdate>0</CanUpdate>
         <CanCreate>0</CanCreate>
+        <CanReadUnmasked>0</CanReadUnmasked>
+      </FieldPermission>
+    </FieldPermissions>
+  </FieldSecurityProfile>
+  <FieldSecurityProfile name="Power Notify Request Payload" description="Caller-supplied token values on notification requests. Support read-only." fieldsecurityprofileid="{645f7e89-a13a-4421-806a-f744bb6c2312}">
+    <FieldPermissions>
+      <FieldPermission>
+        <EntityName>pnfy_notificationrequest</EntityName>
+        <AttributeName>pnfy_runtimeparameters</AttributeName>
+        <CanRead>4</CanRead>
+        <CanUpdate>0</CanUpdate>
+        <CanCreate>0</CanCreate>
+        <CanReadUnmasked>0</CanReadUnmasked>
+      </FieldPermission>
+    </FieldPermissions>
+  </FieldSecurityProfile>
+  <FieldSecurityProfile name="Power Notify Token Encoding Bypass" description="Controls the token flag that disables HTML encoding. Administrators only." fieldsecurityprofileid="{6467f60f-cf73-4cb3-8bba-b16a916d6de9}">
+    <FieldPermissions>
+      <FieldPermission>
+        <EntityName>pnfy_notificationtoken</EntityName>
+        <AttributeName>pnfy_allowhtml</AttributeName>
+        <CanRead>4</CanRead>
+        <CanUpdate>4</CanUpdate>
+        <CanCreate>4</CanCreate>
         <CanReadUnmasked>0</CanReadUnmasked>
       </FieldPermission>
     </FieldPermissions>

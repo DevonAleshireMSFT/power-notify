@@ -109,6 +109,14 @@
       <RootComponent type="9" schemaName="pnfy_tokendatatype" behavior="0" />
       <RootComponent type="9" schemaName="pnfy_validationstatus" behavior="0" />
       <RootComponent type="20" id="{c97f08d2-21ea-4c14-b9df-ca2185262a05}" behavior="0" />
+      <RootComponent type="20" id="{675548a9-44c4-4f8f-baea-7691809f23ec}" behavior="0" />
+      <RootComponent type="20" id="{1abfbccc-a5b1-4c05-be8b-e20d1d9b90c7}" behavior="0" />
+      <RootComponent type="20" id="{cdb07719-c9c5-42f5-b52c-9122a85a7bfb}" behavior="0" />
+      <RootComponent type="20" id="{4bff16df-5b66-4806-aa1c-c37d51dd6d2e}" behavior="0" />
+      <RootComponent type="20" id="{562823db-dc57-45fb-8fef-f725b174dd53}" behavior="0" />
+      <RootComponent type="70" id="{1514cb62-56b9-49cb-b757-3ce6feb8f701}" behavior="0" />
+      <RootComponent type="70" id="{645f7e89-a13a-4421-806a-f744bb6c2312}" behavior="0" />
+      <RootComponent type="70" id="{6467f60f-cf73-4cb3-8bba-b16a916d6de9}" behavior="0" />
     </RootComponents>
     <MissingDependencies />
   </SolutionManifest>
