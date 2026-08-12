@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FieldSecurityProfiles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <FieldSecurityProfile name="Power Notify Template Content" description="Notification content (HTML, card JSON, raw-HTML flag). Admins and Template Authors only." fieldsecurityprofileid="{42b585e9-a096-f111-8077-001dd80514a7}">
+    <FieldPermissions>
+      <FieldPermission>
+        <EntityName>pnfy_notificationtemplate</EntityName>
+        <AttributeName>pnfy_bodyhtml</AttributeName>
+        <CanRead>4</CanRead>
+        <CanUpdate>0</CanUpdate>
+        <CanCreate>0</CanCreate>
+        <CanReadUnmasked>0</CanReadUnmasked>
+      </FieldPermission>
+    </FieldPermissions>
+  </FieldSecurityProfile>
+</FieldSecurityProfiles>
