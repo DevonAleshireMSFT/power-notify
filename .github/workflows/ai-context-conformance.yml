@@ -1,0 +1,126 @@
+name: AI Context Conformance
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.ai/**'
+      - 'templates/**'
+      - 'org/**'
+      - 'docs/**'
+      - 'examples/**'
+      - 'registry.md'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'scripts/**'
+      - 'package.json'
+      - '.github/workflows/ai-context-conformance.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  conformance:
+    name: BLOCKING - Conformance gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate .ai/ conformance
+        if: always()
+        run: |
+          set +e
+          node scripts/validate-ai-context.mjs
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            echo "### ✅ BLOCKING: Validate .ai/ conformance" >> "$GITHUB_STEP_SUMMARY"
+            echo "Passed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ❌ BLOCKING: Validate .ai/ conformance" >> "$GITHUB_STEP_SUMMARY"
+            echo "Failed with exit code $status." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$status"
+
+      - name: Check doc links
+        if: always()
+        run: |
+          set +e
+          node scripts/check-links.mjs
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            echo "### ✅ BLOCKING: Check doc links" >> "$GITHUB_STEP_SUMMARY"
+            echo "Passed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ❌ BLOCKING: Check doc links" >> "$GITHUB_STEP_SUMMARY"
+            echo "Failed with exit code $status." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$status"
+
+      - name: Run validator unit tests
+        if: always()
+        run: |
+          set +e
+          node --test
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            echo "### ✅ BLOCKING: Run validator unit tests" >> "$GITHUB_STEP_SUMMARY"
+            echo "Passed." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ❌ BLOCKING: Run validator unit tests" >> "$GITHUB_STEP_SUMMARY"
+            echo "Failed with exit code $status." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$status"
+
+  informational:
+    name: INFORMATIONAL - Strict warnings
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate .ai/ conformance strict mode
+        if: always()
+        run: |
+          set +e
+          node scripts/validate-ai-context.mjs --strict
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            echo "### ✅ INFORMATIONAL: Validate .ai/ conformance strict mode" >> "$GITHUB_STEP_SUMMARY"
+            echo "No strict-mode warnings." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ⚠️ INFORMATIONAL: Validate .ai/ conformance strict mode" >> "$GITHUB_STEP_SUMMARY"
+            echo "Strict mode reported warnings or errors with exit code $status." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$status"
+
+      - name: Check doc links strict mode
+        if: always()
+        run: |
+          set +e
+          node scripts/check-links.mjs --strict
+          status=$?
+          if [ "$status" -eq 0 ]; then
+            echo "### ✅ INFORMATIONAL: Check doc links strict mode" >> "$GITHUB_STEP_SUMMARY"
+            echo "No strict-mode warnings." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ⚠️ INFORMATIONAL: Check doc links strict mode" >> "$GITHUB_STEP_SUMMARY"
+            echo "Strict mode reported warnings or errors with exit code $status." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$status"
