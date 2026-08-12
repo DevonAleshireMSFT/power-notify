@@ -1,7 +1,17 @@
+---
+adr: 0002
+title: Rebuild rather than refactor
+status: accepted
+date: 2026-08-12
+deciders: Devon Aleshire
+reviewers: Devon Aleshire
+applies-to: Power Notify
+supersedes: null
+superseded-by: null
+---
+
 # 0002 — Rebuild rather than refactor
 
-- **Status:** accepted
-- **Date:** 2026-08-12
 
 ## Context
 

@@ -1,7 +1,17 @@
+---
+adr: 0004
+title: Message key, not GUID
+status: accepted
+date: 2026-08-12
+deciders: Devon Aleshire
+reviewers: Devon Aleshire
+applies-to: Power Notify
+supersedes: null
+superseded-by: null
+---
+
 # 0004 — Message key, not GUID
 
-- **Status:** accepted
-- **Date:** 2026-08-12
 
 ## Context
 

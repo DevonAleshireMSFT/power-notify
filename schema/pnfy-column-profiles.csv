@@ -1,0 +1,6 @@
+Profile,Description,Table,Column,CanRead,CanUpdate,CanCreate
+Power Notify Template Content,"Notification content (HTML, card JSON, raw-HTML flag). Admins and Template Authors only.",pnfy_notificationtemplate,pnfy_bodyhtml,4,4,4
+Power Notify Template Content,"Notification content (HTML, card JSON, raw-HTML flag). Admins and Template Authors only.",pnfy_notificationtemplate,pnfy_cardjson,4,4,4
+Power Notify Token Encoding Bypass,"Controls the token flag that disables HTML encoding. Administrators only.",pnfy_notificationtoken,pnfy_allowhtml,4,4,4
+Power Notify Request Payload,"Caller-supplied token values on notification requests. Support read-only.",pnfy_notificationrequest,pnfy_runtimeparameters,4,0,0
+Power Notify Rendered Content,"Rendered notification bodies retained in payload snapshots. Support read-only.",pnfy_payloadsnapshot,pnfy_renderedbody,4,0,0

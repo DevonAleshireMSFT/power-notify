@@ -1,7 +1,17 @@
+---
+adr: 0003
+title: Asynchronous queued delivery
+status: accepted
+date: 2026-08-12
+deciders: Devon Aleshire
+reviewers: Devon Aleshire
+applies-to: Power Notify
+supersedes: null
+superseded-by: null
+---
+
 # 0003 — Asynchronous queued delivery
 
-- **Status:** accepted
-- **Date:** 2026-08-12
 
 ## Context
 

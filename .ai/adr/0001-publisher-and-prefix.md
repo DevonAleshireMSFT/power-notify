@@ -1,7 +1,17 @@
+---
+adr: 0001
+title: Publisher and prefix
+status: accepted
+date: 2026-08-12
+deciders: Devon Aleshire
+reviewers: Devon Aleshire
+applies-to: Power Notify
+supersedes: null
+superseded-by: null
+---
+
 # 0001 — Publisher and prefix
 
-- **Status:** accepted
-- **Date:** 2026-08-12
 
 ## Context
 

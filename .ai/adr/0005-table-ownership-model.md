@@ -1,7 +1,17 @@
+---
+adr: 0005
+title: Table ownership model
+status: accepted
+date: 2026-08-12
+deciders: Devon Aleshire
+reviewers: Devon Aleshire
+applies-to: Power Notify
+supersedes: null
+superseded-by: null
+---
+
 # 0005 — Table ownership model
 
-- **Status:** accepted
-- **Date:** 2026-08-12
 
 ## Context
 

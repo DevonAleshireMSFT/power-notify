@@ -108,6 +108,7 @@
       <RootComponent type="9" schemaName="pnfy_severity" behavior="0" />
       <RootComponent type="9" schemaName="pnfy_tokendatatype" behavior="0" />
       <RootComponent type="9" schemaName="pnfy_validationstatus" behavior="0" />
+      <RootComponent type="20" id="{c97f08d2-21ea-4c14-b9df-ca2185262a05}" behavior="0" />
     </RootComponents>
     <MissingDependencies />
   </SolutionManifest>

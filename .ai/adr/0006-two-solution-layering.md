@@ -1,7 +1,17 @@
+---
+adr: 0006
+title: Two-solution layering
+status: accepted
+date: 2026-08-12
+deciders: Devon Aleshire
+reviewers: Devon Aleshire
+applies-to: Power Notify
+supersedes: null
+superseded-by: null
+---
+
 # 0006 — Two-solution layering
 
-- **Status:** accepted
-- **Date:** 2026-08-12
 
 ## Context
 

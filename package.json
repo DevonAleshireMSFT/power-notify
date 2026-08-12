@@ -1,0 +1,18 @@
+{
+  "name": "power-notify",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tooling host for the Power Notify AI context conformance checks. This repository is a Power Platform solution, not a Node application; package.json exists because scripts/lib/version.mjs resolves it from the repository root.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "validate": "node scripts/validate-ai-context.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "check:staleness": "node scripts/check-staleness.mjs",
+    "check:drift": "node scripts/check-drift.mjs",
+    "check": "npm run validate && npm run check:links && npm run check:staleness && npm run check:drift"
+  },
+  "license": "UNLICENSED"
+}
