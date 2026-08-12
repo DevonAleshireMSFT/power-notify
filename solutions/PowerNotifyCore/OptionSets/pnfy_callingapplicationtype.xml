@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_callingapplicationtype" localizedName="Calling Application Type" description="Kind of consumer. Also used as a multi-select on a definition to restrict which caller kinds may invoke it." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Calling Application Type" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="Kind of consumer. Also used as a multi-select on a definition to restrict which caller kinds may invoke it." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Model-Driven App" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Canvas App" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000002" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Cloud Flow" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000003" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Service or Integration" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_channelfailurebehavior" localizedName="Channel Failure Behavior" description="What the dispatcher does with remaining channels when this channel fails." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Channel Failure Behavior" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="What the dispatcher does with remaining channels when this channel fails." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Continue Other Channels" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Default. Channel isolation." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Abort Remaining Channels" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Use only when partial delivery is worse than none." languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

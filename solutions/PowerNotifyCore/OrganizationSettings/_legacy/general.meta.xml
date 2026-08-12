@@ -11,7 +11,6 @@
   <getstartedpanecontentenabled>True</getstartedpanecontentenabled>
   <ispresenceenabled>True</ispresenceenabled>
   <isautosaveenabled>True</isautosaveenabled>
-  <globalhelpurl></globalhelpurl>
   <globalhelpurlenabled>False</globalhelpurlenabled>
   <globalappendurlparametersenabled>False</globalappendurlparametersenabled>
   <istextwrapenabled>True</istextwrapenabled>

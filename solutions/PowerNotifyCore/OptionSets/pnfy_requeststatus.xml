@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_requeststatus" localizedName="Request Status" description="Rolled-up state of a notification request across all of its delivery attempts." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Request Status" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="Rolled-up state of a notification request across all of its delivery attempts." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Queued" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Accepted and awaiting dispatch." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Processing" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000002" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Sent" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Every enabled channel delivered successfully." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000003" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Partially Sent" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="At least one channel delivered and at least one failed." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000004" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Failed" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000005" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Suppressed" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Matched an active suppression entry and was intentionally not sent." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000006" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Cancelled" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000007" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Rejected" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Failed validation at enqueue and was never dispatched." languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

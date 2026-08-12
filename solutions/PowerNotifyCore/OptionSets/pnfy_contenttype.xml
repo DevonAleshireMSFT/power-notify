@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_contenttype" localizedName="Content Type" description="Determines which template body column is rendered and how token values are encoded." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Content Type" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="Determines which template body column is rendered and how token values are encoded." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Plain Text" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="HTML" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Token values are HTML-encoded unless the token allows raw HTML." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000002" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Adaptive Card JSON" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Token values are JSON-escaped." languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_severity" localizedName="Severity" description="Visual tone of the rendered message." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Severity" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="Visual tone of the rendered message." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Information" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Success" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000002" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Warning" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000003" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Alert" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000004" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Failure" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000005" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="System Message" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

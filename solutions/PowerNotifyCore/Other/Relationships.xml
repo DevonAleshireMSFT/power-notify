@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <EntityRelationship Name="business_unit_pnfy_deliveryattempt" />
   <EntityRelationship Name="business_unit_pnfy_notificationrequest" />
@@ -36,30 +36,30 @@
   <EntityRelationship Name="owner_pnfy_deliveryattempt" />
   <EntityRelationship Name="owner_pnfy_notificationrequest" />
   <EntityRelationship Name="owner_pnfy_payloadsnapshot" />
+  <EntityRelationship Name="pnfy_callingapp_request" />
+  <EntityRelationship Name="pnfy_channelbinding_deliveryattempt" />
+  <EntityRelationship Name="pnfy_channelbinding_recipientrule" />
+  <EntityRelationship Name="pnfy_definition_channelbinding" />
+  <EntityRelationship Name="pnfy_definition_recipientrule" />
+  <EntityRelationship Name="pnfy_definition_request" />
+  <EntityRelationship Name="pnfy_definition_token" />
+  <EntityRelationship Name="pnfy_ownerteam_callingapp" />
+  <EntityRelationship Name="pnfy_ownerteam_definition" />
+  <EntityRelationship Name="pnfy_request_deliveryattempt" />
+  <EntityRelationship Name="pnfy_request_payloadsnapshot" />
+  <EntityRelationship Name="pnfy_request_suppressionentry" />
+  <EntityRelationship Name="pnfy_supportteam_callingapp" />
+  <EntityRelationship Name="pnfy_supportteam_definition" />
+  <EntityRelationship Name="pnfy_team_recipientrule" />
+  <EntityRelationship Name="pnfy_teamsdestination_recipientrule" />
+  <EntityRelationship Name="pnfy_template_channelbinding" />
+  <EntityRelationship Name="pnfy_template_deliveryattempt" />
+  <EntityRelationship Name="pnfy_user_recipientrule" />
+  <EntityRelationship Name="pnfy_user_request" />
   <EntityRelationship Name="team_pnfy_deliveryattempt" />
   <EntityRelationship Name="team_pnfy_notificationrequest" />
   <EntityRelationship Name="team_pnfy_payloadsnapshot" />
   <EntityRelationship Name="user_pnfy_deliveryattempt" />
   <EntityRelationship Name="user_pnfy_notificationrequest" />
   <EntityRelationship Name="user_pnfy_payloadsnapshot" />
-  <EntityRelationship Name="pnfy_definition_channelbinding" />
-  <EntityRelationship Name="pnfy_user_recipientrule" />
-  <EntityRelationship Name="pnfy_team_recipientrule" />
-  <EntityRelationship Name="pnfy_ownerteam_definition" />
-  <EntityRelationship Name="pnfy_supportteam_definition" />
-  <EntityRelationship Name="pnfy_ownerteam_callingapp" />
-  <EntityRelationship Name="pnfy_supportteam_callingapp" />
-  <EntityRelationship Name="pnfy_user_request" />
-  <EntityRelationship Name="pnfy_template_channelbinding" />
-  <EntityRelationship Name="pnfy_definition_recipientrule" />
-  <EntityRelationship Name="pnfy_channelbinding_recipientrule" />
-  <EntityRelationship Name="pnfy_teamsdestination_recipientrule" />
-  <EntityRelationship Name="pnfy_definition_token" />
-  <EntityRelationship Name="pnfy_definition_request" />
-  <EntityRelationship Name="pnfy_callingapp_request" />
-  <EntityRelationship Name="pnfy_request_deliveryattempt" />
-  <EntityRelationship Name="pnfy_channelbinding_deliveryattempt" />
-  <EntityRelationship Name="pnfy_template_deliveryattempt" />
-  <EntityRelationship Name="pnfy_request_payloadsnapshot" />
-  <EntityRelationship Name="pnfy_request_suppressionentry" />
 </EntityRelationships>

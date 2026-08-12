@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_channel" localizedName="Channel" description="Delivery transport and format. Teams and Adaptive Card channels post as the service account user; Flow Bot is not supported in GCC High or DoD." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Channel" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="Delivery transport and format. Teams and Adaptive Card channels post as the service account user; Flow Bot is not supported in GCC High or DoD." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Email" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Teams Channel Message" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000002" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Teams Chat Message" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000003" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Adaptive Card - Teams Channel" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000004" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Adaptive Card - Teams Chat" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000005" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="In-App Notification" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Reserved. Deferred to a later phase." languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

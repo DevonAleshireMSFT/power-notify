@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_deliverystatus" localizedName="Delivery Status" description="Outcome of a single delivery attempt to a single recipient on a single channel." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Delivery Status" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="Outcome of a single delivery attempt to a single recipient on a single channel." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Pending" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Sent" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000002" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Failed" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000003" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Skipped" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Recipient could not be resolved or the channel was disabled. Reason is recorded." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000004" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Awaiting Retry" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000005" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Redirected" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Test mode redirected this delivery away from the real recipient." languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

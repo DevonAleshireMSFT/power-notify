@@ -107,6 +107,11 @@
       <RootComponent type="9" schemaName="pnfy_tokendatatype" behavior="0" />
       <RootComponent type="9" schemaName="pnfy_validationstatus" behavior="0" />
     </RootComponents>
-    <MissingDependencies />
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="70" displayName="Power Notify Template Content" solution="Active" id="{42b585e9-a096-f111-8077-001dd80514a7}" />
+        <Dependent type="70" displayName="Power Notify Template Content" id="{42b585e9-a096-f111-8077-001dd80514a7}" />
+      </MissingDependency>
+    </MissingDependencies>
   </SolutionManifest>
 </ImportExportXml>

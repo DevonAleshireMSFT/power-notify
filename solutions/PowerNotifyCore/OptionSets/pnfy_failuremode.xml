@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_failuremode" localizedName="Failure Mode" description="How a notification failure is surfaced to the calling business process." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Failure Mode" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="How a notification failure is surfaced to the calling business process." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Silent" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Failure is recorded but never surfaced." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Log Only" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Recorded and raised to support, not to the caller." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000002" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Return To Caller" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Validation failures are returned in the response. Delivery failures are not, because delivery is asynchronous." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000003" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Fail Caller" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Enqueue throws on validation failure, aborting the calling process. Use sparingly." languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>

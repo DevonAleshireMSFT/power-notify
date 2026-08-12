@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<optionset Name="pnfy_recipienttype" localizedName="Recipient Type" description="How a recipient rule resolves to a concrete delivery address at run time." xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <OptionSetType>picklist</OptionSetType>
+  <IsGlobal>1</IsGlobal>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <ExternalTypeName></ExternalTypeName>
+  <displaynames>
+    <displayname description="Recipient Type" languagecode="1033" />
+  </displaynames>
+  <Descriptions>
+    <Description description="How a recipient rule resolves to a concrete delivery address at run time." languagecode="1033" />
+  </Descriptions>
+  <options>
+    <option value="630000000" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Static Email Address" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000001" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Dataverse User" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000002" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Dataverse Team" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Expands to team members at run time." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000003" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Entra Group" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000004" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Source Record Owner" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000005" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Source Record Created By" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000006" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Requesting User" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="" languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000007" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Runtime Parameter" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Address is read from a named path in RuntimeParametersJson." languagecode="1033" />
+      </Descriptions>
+    </option>
+    <option value="630000008" ExternalValue="" IsHidden="0">
+      <labels>
+        <label description="Teams Destination" languagecode="1033" />
+      </labels>
+      <Descriptions>
+        <Description description="Resolves to a configured team and channel pair." languagecode="1033" />
+      </Descriptions>
+    </option>
+  </options>
+</optionset>
