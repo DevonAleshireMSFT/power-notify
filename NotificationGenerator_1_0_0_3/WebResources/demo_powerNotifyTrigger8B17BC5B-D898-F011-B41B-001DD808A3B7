@@ -1,0 +1,61 @@
+(function () {
+  const PowerNotify = Object.freeze({
+    triggerFlow: function (formContext) {
+      console.log("Trigger Power Notify Flow Func Invoked");
+
+      //   const formContext = executionContext;
+
+      if (!formContext || !formContext.data || !formContext.data.entity) {
+        console.error("Invalid form context passed to triggerFlow");
+        Xrm.Navigation.openAlertDialog({
+          text: "Error: Invalid form context. Cannot trigger notification.",
+        });
+        return;
+      }
+
+      const recordId = formContext.data.entity
+        .getId()
+        .replace("{", "")
+        .replace("}", "");
+
+      // SECRET REDACTED 2026-08-12. This file previously contained a live Logic Apps SAS.
+      // The original trigger must be rotated in the source environment. See docs/security/SECURITY-INCIDENT-0001.
+      const flowUrl = "<REDACTED-ROTATE-THIS-TRIGGER>";
+
+      console.log("Flow URL: ", flowUrl);
+      console.log("Record ID: ", recordId);
+
+      const payload = {
+        notification_id: recordId,
+      };
+
+      const req = new XMLHttpRequest();
+      req.open("POST", flowUrl, true);
+      req.setRequestHeader("Content-Type", "application/json");
+
+      req.onreadystatechange = function () {
+        console.log("Ready State Changed: ", req.readyState, req.status);
+        if (req.readyState === 4) {
+          if (req.status === 200 || req.status === 202) {
+            Xrm.Navigation.openAlertDialog({
+              text: "Notification triggered successfully.",
+            });
+          } else {
+            Xrm.Navigation.openAlertDialog({
+              text:
+                "Failed to trigger notification.\nStatus: " +
+                req.status +
+                "\n" +
+                req.responseText,
+            });
+          }
+        }
+      };
+
+      req.send(JSON.stringify(payload));
+    },
+  });
+
+  // Expose the object globally
+  window.PowerNotify = PowerNotify;
+})();

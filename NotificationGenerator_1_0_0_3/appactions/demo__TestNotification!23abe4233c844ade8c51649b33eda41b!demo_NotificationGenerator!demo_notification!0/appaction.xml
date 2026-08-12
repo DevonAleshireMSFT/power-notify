@@ -1,0 +1,35 @@
+<appaction uniquename="demo__TestNotification!23abe4233c844ade8c51649b33eda41b!demo_NotificationGenerator!demo_notification!0">
+  <appmoduleid>
+    <uniquename>demo_NotificationGenerator</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Test Notification">
+    <label description="Test Notification" languagecode="1033" />
+  </buttonlabeltext>
+  <buttontooltiptitle default="Trigger Notification">
+    <label description="Trigger Notification" languagecode="1033" />
+  </buttontooltiptitle>
+  <context>1</context>
+  <contextentity>
+    <logicalname>demo_notification</logicalname>
+  </contextentity>
+  <contextvalue>demo_notification</contextvalue>
+  <fonticon>NotificationIcon</fonticon>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>TestNotification!23abe4233c844ade8c51649b33eda41b</name>
+  <onclickeventjavascriptfunctionname>PowerNotify.triggerFlow</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":5}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>8b17bc5b-d898-f011-b41b-001dd808a3b7</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <sequence>100100015.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>

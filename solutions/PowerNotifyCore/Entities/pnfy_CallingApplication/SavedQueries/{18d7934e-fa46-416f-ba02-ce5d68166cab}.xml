@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>0</isdefault>
+    <savedqueryid>{18d7934e-fa46-416f-ba02-ce5d68166cab}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="pnfy_applicationkey" select="1" icon="1" preview="1">
+        <row name="result" id="pnfy_callingapplicationid">
+          <cell name="pnfy_applicationkey" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="pnfy_callingapplication">
+          <attribute name="pnfy_callingapplicationid" />
+          <attribute name="pnfy_applicationkey" />
+          <attribute name="createdon" />
+          <order attribute="pnfy_applicationkey" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="1" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Inactive Calling Applications" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>

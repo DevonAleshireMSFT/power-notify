@@ -1,0 +1,170 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "demo_sharedcommondataserviceforapps_3cb1f"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "056eb3ad-237d-40f3-afee-45d08598c61c"
+          },
+          "type": "Request",
+          "kind": "Button",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            },
+            "headersSchema": {
+              "x-ms-user-name-encoded": {
+                "title": "User name",
+                "type": "string",
+                "format": "byte",
+                "x-ms-dynamically-added": false
+              }
+            }
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "runAfter": {
+            "Initialize_variable": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7a994d3f-7da6-4d94-b733-e0bb8a4d8c23"
+          },
+          "type": "Compose",
+          "inputs": "@triggerOutputs()['headers']['x-ms-user-name-encoded']"
+        },
+        "List_rows": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "demo_notifications",
+              "$filter": "demo_name eq 'Power Notify Test Email'"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          }
+        },
+        "Compose_1": {
+          "runAfter": {
+            "List_rows": [
+              "Succeeded"
+            ]
+          },
+          "type": "Compose",
+          "inputs": "@outputs('List_rows')?['body/value']"
+        },
+        "Condition": {
+          "actions": {
+            "Set_variable": {
+              "type": "SetVariable",
+              "inputs": {
+                "name": "var_NotificationCode",
+                "value": "@first(body('List_rows')?['value'])?['demo_notificationid']"
+              }
+            }
+          },
+          "runAfter": {
+            "Compose_1": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Add_a_new_row": {
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "parameters": {
+                    "entityName": "demo_notifications",
+                    "item/demo_name": "Power Notify Test Email",
+                    "item/demo_bodyhtml": "<!DOCTYPE html>\n<html>\n <head>\n   <meta charset=\"UTF-8\">\n   <style>\n     body {\n       font-family: Arial, sans-serif;\n       background-color: #f4f4f4;\n       color: #333;\n       padding: 20px;\n     }\n\n     .container {\n       background-color: #ffffff;\n       padding: 20px;\n       border-radius: 8px;\n       max-width: 600px;\n       margin: 0 auto;\n       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n     }\n\n     h1 {\n       color: #0078d4;\n     }\n\n     .footer {\n       font-size: 12px;\n       color: #777;\n       margin-top: 20px;\n       text-align: center;\n     }\n   </style>\n </head>\n\n <body>\n   <div class=\"container\">\n     <h1>🚀 Notification Test</h1>\n     <p>Hello <strong>User</strong>,</p>\n\n     <p>This is a test email sent from the <strong>Power Platform Notification System</strong>.</p>\n\n     <p>If you're reading this, your HTML notifications are working as expected.</p>\n\n     <p>✅ Message sent successfully.</p>\n\n     <p>Best regards,<br />\n     <em>Power Notify Notification Service</em></p>\n\n     <div class=\"footer\">\n       This is a system-generated message. Do not reply.\n     </div>\n   </div>\n </body>\n</html>",
+                    "item/demo_channelcode": "1",
+                    "item/demo_notificationtype": "345630000",
+                    "item/demo_title": "Power Notify Test Email"
+                  },
+                  "host": {
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+                    "operationId": "CreateRecord",
+                    "connectionName": "shared_commondataserviceforapps"
+                  }
+                }
+              },
+              "Set_variable_1": {
+                "runAfter": {
+                  "Add_a_new_row": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "SetVariable",
+                "inputs": {
+                  "name": "var_NotificationCode",
+                  "value": "@body('Add_a_new_row')?['demo_notificationid']"
+                }
+              }
+            }
+          },
+          "expression": {
+            "and": [
+              {
+                "greater": [
+                  "@length(body('List_rows')?['value'])",
+                  0
+                ]
+              }
+            ]
+          },
+          "type": "If"
+        },
+        "Initialize_variable": {
+          "runAfter": {},
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "var_NotificationCode",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

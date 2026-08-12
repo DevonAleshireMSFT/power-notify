@@ -1,0 +1,266 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "demo_sharedcommondataserviceforapps_3cb1f"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_office365": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "mnpoc_sharedoffice365_ff151"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "5d0e49f5-003d-4079-b3e1-81391338d842"
+          },
+          "type": "Request",
+          "kind": "PowerAppV2",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "title": "notification_code",
+                  "type": "string",
+                  "x-ms-dynamically-added": true,
+                  "description": "Please enter your input",
+                  "x-ms-content-hint": "TEXT"
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Get_Notification_by_ID": {
+          "runAfter": {
+            "Initialize_var_TeamsNotificationType": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "018b5b9d-65a4-484e-ab3d-3252f2949c1d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "demo_notifications",
+              "recordId": "@triggerBody()['text']"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "Get_Notification_by_ID": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "5b786ee4-deea-4093-bc09-c6d54971def8"
+          },
+          "type": "Compose",
+          "inputs": "@body('Get_Notification_by_ID')"
+        },
+        "Check_if_Email_Notification_Type": {
+          "actions": {
+            "Check_if_Email_is_SendAs": {
+              "actions": {
+                "Switch_-_Use_Send_As_Based_on_Notification_Code_": {
+                  "cases": {
+                    "Case": {
+                      "case": 0,
+                      "actions": {}
+                    }
+                  },
+                  "default": {
+                    "actions": {}
+                  },
+                  "expression": "@triggerBody()['text']",
+                  "metadata": {
+                    "operationMetadataId": "7069cefe-8d73-42d4-a17c-6e83e0431417"
+                  },
+                  "type": "Switch"
+                }
+              },
+              "else": {
+                "actions": {
+                  "Send_Email_Notification": {
+                    "metadata": {
+                      "operationMetadataId": "4ea63313-4d9c-4af5-847c-e57ce5550597"
+                    },
+                    "type": "OpenApiConnection",
+                    "inputs": {
+                      "parameters": {
+                        "emailMessage/To": "devon.aleshire@microsoft.com",
+                        "emailMessage/Subject": "@outputs('Get_Notification_by_ID')?['body/demo_title']",
+                        "emailMessage/Body": "@outputs('Get_Notification_by_ID')?['body/demo_bodyhtml']",
+                        "emailMessage/Importance": "Normal"
+                      },
+                      "host": {
+                        "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365",
+                        "operationId": "SendEmailV2",
+                        "connectionName": "shared_office365"
+                      }
+                    }
+                  }
+                }
+              },
+              "expression": {
+                "equals": [
+                  "@outputs('Get_Notification_by_ID')?['body/demo_usesendas']",
+                  "@true"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "3d9385fc-c89a-4ec9-b08f-b171b2419bad"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Create_Array_of_Channel_Codes": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {}
+          },
+          "expression": {
+            "contains": [
+              "@outputs('Create_Array_of_Channel_Codes')",
+              "@variables('var_EmailNotificationType')"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0f69b9a4-90db-4b5e-8a5e-c2cc459b7284"
+          },
+          "type": "If"
+        },
+        "Create_Array_of_Channel_Codes": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "11379228-c2a7-4cde-99de-9b800a08384f"
+          },
+          "type": "Compose",
+          "inputs": "@split( outputs('Get_Notification_by_ID')?['body/demo_channelcode'], ',')"
+        },
+        "Initialize_var_EmailNotificationType": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "1b9f5c33-53ca-4961-b556-eeb2c0760be5"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "var_EmailNotificationType",
+                "type": "string",
+                "value": "1"
+              }
+            ]
+          }
+        },
+        "Initialize_var_TeamsNotificationType": {
+          "runAfter": {
+            "Initialize_var_EmailNotificationType": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "32714bc4-0d98-4fa3-b24d-c06b07580b64"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "var_TeamsNotificationType",
+                "type": "string",
+                "value": "3"
+              }
+            ]
+          }
+        },
+        "Respond_to_a_Power_App_or_flow": {
+          "runAfter": {
+            "Check_if_Email_Notification_Type": [
+              "Succeeded"
+            ]
+          },
+          "type": "Response",
+          "kind": "PowerApp",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "title": "Success",
+                  "type": "boolean",
+                  "x-ms-content-hint": "BOOLEAN",
+                  "x-ms-dynamically-added": true
+                },
+                "message": {
+                  "title": "Message",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "notificationid": {
+                  "title": "NotificationId",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "success": "@true",
+              "message": "Operation completed successfully",
+              "notificationid": "@{triggerBody()?['text']}"
+            }
+          }
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

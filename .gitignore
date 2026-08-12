@@ -1,0 +1,18 @@
+# Solution export artifacts — never commit; they contain packed binaries and
+# historically have contained flow trigger secrets. Commit unpacked source only.
+artifacts/
+*.zip
+
+# Local deployment settings that may carry environment-specific identifiers
+deployment/settings/*.local.json
+
+# Tooling
+bin/
+obj/
+.vs/
+*.user
+node_modules/
+
+# OS
+Thumbs.db
+.DS_Store

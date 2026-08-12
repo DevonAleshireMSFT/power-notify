@@ -1,0 +1,102 @@
+{
+  "properties": {
+    "connectionReferences": {},
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "45355e60-a2dc-40c6-b4ff-ba39b10996c5"
+          },
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "notification_id": {
+                  "type": "string"
+                }
+              }
+            },
+            "triggerAuthenticationType": "All"
+          }
+        }
+      },
+      "actions": {
+        "Compose": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "6d8299c9-647e-44a6-86d1-d982778b9fa8"
+          },
+          "type": "Compose",
+          "inputs": "@triggerBody()?['notification_id']"
+        },
+        "Run_a_Child_Flow": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "950be727-9164-4add-bf83-de825c9b1e78"
+          },
+          "type": "Workflow",
+          "inputs": {
+            "host": {
+              "workflowReferenceName": "fd180b72-c598-f011-b41b-001dd80e6427"
+            },
+            "body": {
+              "text": "@triggerBody()?['notification_id']"
+            }
+          }
+        },
+        "Condition": {
+          "actions": {
+            "Success_Response": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "b46c33cc-95d0-42c5-a99d-945ce988eea0"
+              },
+              "type": "Response",
+              "kind": "Http",
+              "inputs": {
+                "statusCode": 200,
+                "headers": {
+                  "content-type": "application/json"
+                },
+                "body": {
+                  "message": "Notification sent successfully"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "Run_a_Child_Flow": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@body('Run_a_Child_Flow')?['status']",
+              "success"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "80c38063-24b9-49aa-8d2c-17bfd08f14e8"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}
