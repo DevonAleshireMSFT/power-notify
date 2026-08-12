@@ -17,7 +17,10 @@
 [CmdletBinding(SupportsShouldProcess)]
 param(
     [string]$ManifestPath = (Join-Path $PSScriptRoot '..\schema\pnfy-columns.csv'),
-    [string]$SolutionRoot = (Join-Path $PSScriptRoot '..\solutions\PowerNotifyCore')
+    [string]$RelationshipPath = (Join-Path $PSScriptRoot '..\schema\pnfy-relationships.csv'),
+    [string]$SolutionRoot = (Join-Path $PSScriptRoot '..\solutions\PowerNotifyCore'),
+    # Restricts relationship generation to named relationships, for validating one slice at a time.
+    [string[]]$OnlyRelationship
 )
 
 $ErrorActionPreference = 'Stop'
@@ -153,6 +156,130 @@ $entitiesRoot = Join-Path $SolutionRoot 'Entities'
 $added = 0
 $skipped = 0
 
+# --- Lookup columns -------------------------------------------------------
+# A lookup needs both an attribute on the referencing entity and a matching
+# EntityRelationship in the shared customizations file. Both are emitted here so
+# the two can never drift apart.
+$relationships = @()
+if (Test-Path $RelationshipPath) { $relationships = @(Import-Csv -Path $RelationshipPath) }
+if ($OnlyRelationship) { $relationships = @($relationships | Where-Object { $OnlyRelationship -contains $_.Name.Trim() }) }
+
+# Solution XML refers to tables by schema name, not logical name. Entity folder names carry the
+# correct casing for custom tables; platform tables are mapped explicitly.
+$schemaNameMap = @{ 'systemuser' = 'SystemUser'; 'team' = 'Team' }
+Get-ChildItem -Path (Join-Path $SolutionRoot 'Entities') -Directory |
+    ForEach-Object { $schemaNameMap[$_.Name.ToLowerInvariant()] = $_.Name }
+
+function Resolve-SchemaName([string]$Name) {
+    $key = $Name.Trim().ToLowerInvariant()
+    if ($schemaNameMap.ContainsKey($key)) { return $schemaNameMap[$key] }
+    $Name.Trim()
+}
+
+function New-LookupAttributeXml($Rel) {
+    $logical  = $Rel.LookupColumn.Trim().ToLowerInvariant()
+    $required = if ([string]::IsNullOrWhiteSpace($Rel.Required)) { 'none' } else { $Rel.Required.Trim() }
+    $display  = ConvertTo-XmlText $Rel.LookupDisplay
+    $desc     = ConvertTo-XmlText $Rel.Description
+    $physical = Get-PhysicalName -LogicalName $logical -Display $Rel.LookupDisplay
+
+    $mask = 'ValidForAdvancedFind|ValidForForm|ValidForGrid'
+    if ($required -eq 'required') { $mask += '|RequiredForForm' }
+
+    $sb = [System.Text.StringBuilder]::new()
+    [void]$sb.AppendLine("        <attribute PhysicalName=`"$physical`">")
+    [void]$sb.AppendLine("          <Type>lookup</Type>")
+    [void]$sb.AppendLine("          <Name>$logical</Name>")
+    [void]$sb.AppendLine("          <LogicalName>$logical</LogicalName>")
+    [void]$sb.AppendLine("          <RequiredLevel>$required</RequiredLevel>")
+    [void]$sb.AppendLine("          <DisplayMask>$mask</DisplayMask>")
+    [void]$sb.AppendLine("          <ImeMode>auto</ImeMode>")
+    [void]$sb.AppendLine("          <ValidForUpdateApi>1</ValidForUpdateApi>")
+    [void]$sb.AppendLine("          <ValidForReadApi>1</ValidForReadApi>")
+    [void]$sb.AppendLine("          <ValidForCreateApi>1</ValidForCreateApi>")
+    [void]$sb.AppendLine("          <IsCustomField>1</IsCustomField>")
+    [void]$sb.AppendLine("          <IsAuditEnabled>1</IsAuditEnabled>")
+    [void]$sb.AppendLine("          <IsSecured>0</IsSecured>")
+    [void]$sb.AppendLine("          <IntroducedVersion>1.0.0.0</IntroducedVersion>")
+    [void]$sb.AppendLine("          <IsCustomizable>1</IsCustomizable>")
+    [void]$sb.AppendLine("          <IsRenameable>1</IsRenameable>")
+    [void]$sb.AppendLine("          <CanModifySearchSettings>1</CanModifySearchSettings>")
+    [void]$sb.AppendLine("          <CanModifyRequirementLevelSettings>1</CanModifyRequirementLevelSettings>")
+    [void]$sb.AppendLine("          <CanModifyAdditionalSettings>1</CanModifyAdditionalSettings>")
+    [void]$sb.AppendLine("          <SourceType>0</SourceType>")
+    [void]$sb.AppendLine("          <IsGlobalFilterEnabled>0</IsGlobalFilterEnabled>")
+    [void]$sb.AppendLine("          <IsSortableEnabled>0</IsSortableEnabled>")
+    [void]$sb.AppendLine("          <CanModifyGlobalFilterSettings>1</CanModifyGlobalFilterSettings>")
+    [void]$sb.AppendLine("          <CanModifyIsSortableSettings>1</CanModifyIsSortableSettings>")
+    [void]$sb.AppendLine("          <IsDataSourceSecret>0</IsDataSourceSecret>")
+    [void]$sb.AppendLine("          <AutoNumberFormat></AutoNumberFormat>")
+    [void]$sb.AppendLine("          <IsSearchable>0</IsSearchable>")
+    [void]$sb.AppendLine("          <IsFilterable>1</IsFilterable>")
+    [void]$sb.AppendLine("          <IsRetrievable>1</IsRetrievable>")
+    [void]$sb.AppendLine("          <IsLocalizable>0</IsLocalizable>")
+    [void]$sb.AppendLine("          <LookupStyle>single</LookupStyle>")
+    [void]$sb.AppendLine("          <LookupTypes />")
+    [void]$sb.AppendLine("          <displaynames>")
+    [void]$sb.AppendLine("            <displayname description=`"$display`" languagecode=`"1033`" />")
+    [void]$sb.AppendLine("          </displaynames>")
+    [void]$sb.AppendLine("          <Descriptions>")
+    [void]$sb.AppendLine("            <Description description=`"$desc`" languagecode=`"1033`" />")
+    [void]$sb.AppendLine("          </Descriptions>")
+    [void]$sb.AppendLine("        </attribute>")
+    $sb.ToString()
+}
+
+function New-RelationshipXml($Rel) {
+    $referencing = Resolve-SchemaName $Rel.ReferencingTable
+    $referenced  = Resolve-SchemaName $Rel.ReferencedTable
+    $lookup      = $Rel.LookupColumn.Trim().ToLowerInvariant()
+    $lookupSchema = Get-PhysicalName -LogicalName $lookup -Display $Rel.LookupDisplay
+    $cascadeDelete = $Rel.CascadeDelete.Trim()
+    $cascadeAssign = $Rel.CascadeAssign.Trim()
+    $cascadeShare  = if ($cascadeAssign -eq 'Cascade') { 'Cascade' } else { 'NoCascade' }
+    $desc = ConvertTo-XmlText $Rel.Description
+    # Related-record navigation is noise on systemuser and team, so suppress it there.
+    $navOption = if ($referenced -in 'SystemUser', 'Team') { 'DoNotDisplay' } else { 'UseCollectionName' }
+
+    $sb = [System.Text.StringBuilder]::new()
+    [void]$sb.AppendLine("  <EntityRelationship Name=`"$($Rel.Name.Trim())`">")
+    [void]$sb.AppendLine("    <EntityRelationshipType>OneToMany</EntityRelationshipType>")
+    [void]$sb.AppendLine("    <IsCustomizable>1</IsCustomizable>")
+    [void]$sb.AppendLine("    <IntroducedVersion>1.0.0.0</IntroducedVersion>")
+    [void]$sb.AppendLine("    <IsHierarchical>0</IsHierarchical>")
+    [void]$sb.AppendLine("    <ReferencingEntityName>$referencing</ReferencingEntityName>")
+    [void]$sb.AppendLine("    <ReferencedEntityName>$referenced</ReferencedEntityName>")
+    [void]$sb.AppendLine("    <CascadeAssign>$cascadeAssign</CascadeAssign>")
+    [void]$sb.AppendLine("    <CascadeDelete>$cascadeDelete</CascadeDelete>")
+    [void]$sb.AppendLine("    <CascadeArchive>$cascadeDelete</CascadeArchive>")
+    [void]$sb.AppendLine("    <CascadeReparent>NoCascade</CascadeReparent>")
+    [void]$sb.AppendLine("    <CascadeShare>$cascadeShare</CascadeShare>")
+    [void]$sb.AppendLine("    <CascadeUnshare>$cascadeShare</CascadeUnshare>")
+    [void]$sb.AppendLine("    <CascadeRollupView>NoCascade</CascadeRollupView>")
+    [void]$sb.AppendLine("    <IsValidForAdvancedFind>1</IsValidForAdvancedFind>")
+    [void]$sb.AppendLine("    <ReferencingAttributeName>$lookupSchema</ReferencingAttributeName>")
+    [void]$sb.AppendLine("    <RelationshipDescription>")
+    [void]$sb.AppendLine("      <Descriptions>")
+    [void]$sb.AppendLine("        <Description description=`"$desc`" languagecode=`"1033`" />")
+    [void]$sb.AppendLine("      </Descriptions>")
+    [void]$sb.AppendLine("    </RelationshipDescription>")
+    [void]$sb.AppendLine("    <EntityRelationshipRoles>")
+    [void]$sb.AppendLine("      <EntityRelationshipRole>")
+    [void]$sb.AppendLine("        <NavPaneDisplayOption>$navOption</NavPaneDisplayOption>")
+    [void]$sb.AppendLine("        <NavPaneArea>Details</NavPaneArea>")
+    [void]$sb.AppendLine("        <NavPaneOrder>10000</NavPaneOrder>")
+        [void]$sb.AppendLine("        <NavigationPropertyName>$lookupSchema</NavigationPropertyName>")
+    [void]$sb.AppendLine("        <RelationshipRoleType>1</RelationshipRoleType>")
+    [void]$sb.AppendLine("      </EntityRelationshipRole>")
+    [void]$sb.AppendLine("      <EntityRelationshipRole>")
+    [void]$sb.AppendLine("        <NavigationPropertyName>$($Rel.Name.Trim())</NavigationPropertyName>")
+    [void]$sb.AppendLine("        <RelationshipRoleType>0</RelationshipRoleType>")
+    [void]$sb.AppendLine("      </EntityRelationshipRole>")
+    [void]$sb.AppendLine("    </EntityRelationshipRoles>")
+    [void]$sb.AppendLine("  </EntityRelationship>")
+    $sb.ToString()
+}
+
 foreach ($group in $manifest | Group-Object Table) {
     $dir = Get-ChildItem -Path $entitiesRoot -Directory | Where-Object { $_.Name -ieq $group.Name }
     if (-not $dir) { throw "No unpacked entity folder for table '$($group.Name)'. Create the table shell first." }
@@ -185,3 +312,80 @@ foreach ($group in $manifest | Group-Object Table) {
 
 Write-Host ""
 Write-Host "Columns added: $added   already present (skipped): $skipped"
+
+# --- Lookups and relationships -------------------------------------------
+$lookupsAdded = 0
+$relsAdded = 0
+
+foreach ($relGroup in $relationships | Group-Object ReferencingTable) {
+    $dir = Get-ChildItem -Path $entitiesRoot -Directory | Where-Object { $_.Name -ieq $relGroup.Name }
+    if (-not $dir) { throw "No unpacked entity folder for referencing table '$($relGroup.Name)'" }
+
+    $entityPath = Join-Path $dir.FullName 'Entity.xml'
+    $xml = Get-Content -Path $entityPath -Raw
+    $present = [regex]::Matches($xml, '<LogicalName>(?<n>[^<]+)</LogicalName>') |
+               ForEach-Object { $_.Groups['n'].Value.ToLowerInvariant() }
+
+    $block = [System.Text.StringBuilder]::new()
+    foreach ($rel in $relGroup.Group) {
+        if ($present -contains $rel.LookupColumn.Trim().ToLowerInvariant()) { continue }
+        [void]$block.Append((New-LookupAttributeXml $rel))
+        $lookupsAdded++
+    }
+
+    if ($block.Length -eq 0) { continue }
+    $marker = '      </attributes>'
+    $idx = $xml.IndexOf($marker)
+    if ($idx -lt 0) { throw "Could not find the attributes close tag in $entityPath" }
+
+    if ($PSCmdlet.ShouldProcess($entityPath, 'Insert lookup attribute XML')) {
+        [System.IO.File]::WriteAllText($entityPath, $xml.Insert($idx, $block.ToString()))
+        Write-Host "$($relGroup.Name): wrote lookups"
+    }
+}
+
+# Relationships live one file per referenced entity under Other/Relationships, and every one must
+# also be listed in Other/Relationships.xml - the packer reads that index, not the folder.
+$relDir = Join-Path $SolutionRoot 'Other\Relationships'
+if (-not (Test-Path $relDir)) { New-Item -ItemType Directory -Path $relDir -Force | Out-Null }
+$indexPath = Join-Path $SolutionRoot 'Other\Relationships.xml'
+$index = Get-Content -Path $indexPath -Raw
+
+foreach ($refGroup in $relationships | Group-Object { Resolve-SchemaName $_.ReferencedTable }) {
+    $referenced = $refGroup.Name
+    $relFile = Join-Path $relDir "$referenced.xml"
+    $existing = if (Test-Path $relFile) { Get-Content $relFile -Raw } else { '' }
+
+    $body = [System.Text.StringBuilder]::new()
+    foreach ($rel in $refGroup.Group) {
+        if ($existing -match [regex]::Escape("<EntityRelationship Name=`"$($rel.Name.Trim())`">")) { continue }
+        [void]$body.Append((New-RelationshipXml $rel))
+        $relsAdded++
+    }
+    if ($body.Length -eq 0) { continue }
+
+    if ($PSCmdlet.ShouldProcess($relFile, 'Write entity relationships')) {
+        if ($existing) {
+            $idx = $existing.LastIndexOf('</EntityRelationships>')
+            $out = $existing.Insert($idx, $body.ToString())
+        } else {
+            $out = "<?xml version=`"1.0`" encoding=`"utf-8`"?>`r`n<EntityRelationships xmlns:xsi=`"http://www.w3.org/2001/XMLSchema-instance`">`r`n$($body.ToString())</EntityRelationships>"
+        }
+        [System.IO.File]::WriteAllText($relFile, $out)
+        Write-Host "Relationships/$referenced.xml: written"
+    }
+}
+
+$indexAdditions = [System.Text.StringBuilder]::new()
+foreach ($rel in $relationships) {
+    $entry = "  <EntityRelationship Name=`"$($rel.Name.Trim())`" />"
+    if ($index -match [regex]::Escape($entry)) { continue }
+    [void]$indexAdditions.AppendLine($entry)
+}
+if ($indexAdditions.Length -gt 0 -and $PSCmdlet.ShouldProcess($indexPath, 'Register relationships in index')) {
+    $idx = $index.LastIndexOf('</EntityRelationships>')
+    [System.IO.File]::WriteAllText($indexPath, $index.Insert($idx, $indexAdditions.ToString()))
+    Write-Host 'Relationships.xml: index updated'
+}
+
+Write-Host "Lookups added: $lookupsAdded   relationships added: $relsAdded"
