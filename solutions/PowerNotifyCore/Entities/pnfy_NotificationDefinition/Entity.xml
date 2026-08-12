@@ -398,13 +398,13 @@
           <IsRetrievable>1</IsRetrievable>
           <IsLocalizable>0</IsLocalizable>
           <Format>text</Format>
-          <MaxLength>850</MaxLength>
-          <Length>1700</Length>
+          <MaxLength>100</MaxLength>
+          <Length>200</Length>
           <displaynames>
-            <displayname description="MessageKey" languagecode="1033" />
+            <displayname description="Message Key" languagecode="1033" />
           </displaynames>
           <Descriptions>
-            <Description description="" languagecode="1033" />
+            <Description description="Stable logical identifier callers use to address this notification. Immutable once published - retire, never rename." languagecode="1033" />
           </Descriptions>
         </attribute>
         <attribute PhysicalName="pnfy_NotificationDefinitionId">

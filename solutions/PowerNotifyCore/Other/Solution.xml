@@ -93,6 +93,19 @@
       <RootComponent type="1" schemaName="pnfy_recipientrule" behavior="0" />
       <RootComponent type="1" schemaName="pnfy_suppressionentry" behavior="0" />
       <RootComponent type="1" schemaName="pnfy_teamsdestination" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_callingapplicationtype" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_channel" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_channelfailurebehavior" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_contenttype" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_deliverystatus" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_failuremode" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_priority" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_recipientrole" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_recipienttype" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_requeststatus" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_severity" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_tokendatatype" behavior="0" />
+      <RootComponent type="9" schemaName="pnfy_validationstatus" behavior="0" />
     </RootComponents>
     <MissingDependencies />
   </SolutionManifest>
