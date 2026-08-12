@@ -6,14 +6,16 @@ How to decide who handles what.
 
 | Work Type | Route To | Examples |
 |-----------|----------|----------|
-| {domain 1} | {Name} | {example tasks} |
-| {domain 2} | {Name} | {example tasks} |
-| {domain 3} | {Name} | {example tasks} |
-| Code review | {Name} | Review PRs, check quality, suggest improvements |
-| Testing | {Name} | Write tests, find edge cases, verify fixes |
-| Scope & priorities | {Name} | What to build next, trade-offs, decisions |
+| Architecture & solution structure | Da Vinci | Data-model decisions, delivery-pipeline design, entity relationships, extensibility |
+| Backend / plugin logic | Tesla | C# Dataverse plugins, delivery engine, custom APIs, retries, delivery-status transitions |
+| Schema & Dataverse config | Edison | pnfy_* entities, columns, option sets, schema CSVs, Build-PnfySchema.ps1, forms/views |
+| Channel integrations | Bell | Teams destinations, channel bindings, payload/template shaping, external auth & tokens |
+| Testing | Curie | Test cases, edge cases (suppression, retries, down channels), verify fixes |
+| Code review | Da Vinci | Review PRs, check quality, gate significant changes |
+| Scope & priorities | Da Vinci | What to build next, trade-offs, decisions |
 | Session logging | Scribe | Automatic — never needs routing |
 | RAI review | Rai | Content safety, bias checks, credential detection, ethical review |
+| Verification / Devil's Advocate | Fact Checker | Verify claims, challenge design assumptions, pre-mortem |
 
 ## Issue Routing
 

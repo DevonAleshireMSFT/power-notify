@@ -6,13 +6,21 @@
 
 | Name | Role | Notes |
 |------|------|-------|
-| Squad | Coordinator | Routes work, enforces handoffs and reviewer gates. |
+| Ben Franklin | Coordinator | Routes work, enforces handoffs and reviewer gates. |
 
 ## Members
 
 | Name | Role | Charter | Status |
 |------|------|---------|--------|
-
+| Da Vinci | Lead / Solution Architect | .squad/agents/davinci/charter.md | 🏗️ Lead |
+| Tesla | Backend / Plugin Dev | .squad/agents/tesla/charter.md | 🔧 Backend |
+| Edison | Power Platform / Data Dev | .squad/agents/edison/charter.md | 📊 Data |
+| Bell | Integration Dev | .squad/agents/bell/charter.md | 🔌 Integration |
+| Curie | Tester / QA | .squad/agents/curie/charter.md | 🧪 Tester |
+| Scribe | Session Logger & Memory | .squad/agents/scribe/charter.md | 📋 Scribe |
+| Ralph | Work Monitor | .squad/agents/ralph/charter.md | 🔄 Monitor |
+| Rai | RAI Reviewer | .squad/agents/Rai/charter.md | 🛡️ RAI |
+| Fact Checker | Verification & Devil's Advocate | .squad/agents/fact-checker/charter.md | 🔍 Verifier |
 
 ## Coding Agent
 
@@ -49,5 +57,8 @@
 
 ## Project Context
 
-- **Project:** power-notify
+- **Project:** power-notify — a Microsoft Power Platform / Dataverse notification engine
+- **Owner:** Devon Aleshire
+- **Stack:** Dataverse solution (PowerNotifyCore), C# plugins, pnfy_* entities, CSV-driven schema (schema/pnfy-*.csv) via tools/Build-PnfySchema.ps1, solution ALM
+- **Casting universe:** Famous Artists and Inventors (user-requested)
 - **Created:** 2026-08-12
