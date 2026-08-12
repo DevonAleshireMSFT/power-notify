@@ -1,0 +1,8 @@
+Table,Name,DisplayName,Attributes,Description
+pnfy_NotificationDefinition,pnfy_MessageKeyUnique,Message Key,pnfy_messagekey,"Callers address notifications by message key, so it must be unique. Also makes configuration data migration a deterministic upsert."
+pnfy_CallingApplication,pnfy_ApplicationKeyUnique,Application Key,pnfy_applicationkey,"Consumers identify themselves by application key. Enables deterministic configuration data upsert across environments."
+pnfy_TeamsDestination,pnfy_DestinationKeyUnique,Destination Key,pnfy_destinationkey,"Teams destinations are referenced by key and carry environment-specific IDs, so the key must be stable and unique."
+pnfy_NotificationTemplate,pnfy_TemplateKeyVersion,Template Key and Version,pnfy_templatekey;pnfy_version,"Published templates are immutable; a new version is a new row. This pair is the natural identity."
+pnfy_ChannelBinding,pnfy_DefinitionChannel,Definition and Channel,pnfy_notificationdefinition;pnfy_channel,"A notification may enable a given channel only once."
+pnfy_NotificationToken,pnfy_DefinitionToken,Definition and Token Name,pnfy_notificationdefinition;pnfy_tokenname,"A token may be declared only once per notification definition."
+pnfy_SuppressionEntry,pnfy_SuppressionHashUnique,Suppression Hash,pnfy_suppressionhash,"Makes duplicate suppression atomic - the insert either succeeds or collides, rather than racing a read-then-write."

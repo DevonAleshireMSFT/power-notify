@@ -885,6 +885,20 @@
           </Descriptions>
         </attribute>
       </attributes>
+      <EntityKeys>
+        <EntityKey>
+          <Name>pnfy_SuppressionHashUnique</Name>
+          <LogicalName>pnfy_suppressionhashunique</LogicalName>
+          <IntroducedVersion>1.0.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <EntityKeyAttributes>
+            <AttributeName>pnfy_suppressionhash</AttributeName>
+          </EntityKeyAttributes>
+          <displaynames>
+            <displayname description="Suppression Hash" languagecode="1033" />
+          </displaynames>
+        </EntityKey>
+      </EntityKeys>
       <EntitySetName>pnfy_suppressionentries</EntitySetName>
       <IsDuplicateCheckSupported>0</IsDuplicateCheckSupported>
       <IsBusinessProcessEnabled>0</IsBusinessProcessEnabled>

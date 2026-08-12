@@ -945,6 +945,21 @@
           </Descriptions>
         </attribute>
       </attributes>
+      <EntityKeys>
+        <EntityKey>
+          <Name>pnfy_DefinitionToken</Name>
+          <LogicalName>pnfy_definitiontoken</LogicalName>
+          <IntroducedVersion>1.0.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <EntityKeyAttributes>
+            <AttributeName>pnfy_notificationdefinition</AttributeName>
+            <AttributeName>pnfy_tokenname</AttributeName>
+          </EntityKeyAttributes>
+          <displaynames>
+            <displayname description="Definition and Token Name" languagecode="1033" />
+          </displaynames>
+        </EntityKey>
+      </EntityKeys>
       <EntitySetName>pnfy_notificationtokens</EntitySetName>
       <IsDuplicateCheckSupported>0</IsDuplicateCheckSupported>
       <IsBusinessProcessEnabled>0</IsBusinessProcessEnabled>

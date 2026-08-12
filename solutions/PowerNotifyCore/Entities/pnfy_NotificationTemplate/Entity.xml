@@ -1135,6 +1135,21 @@
           </Descriptions>
         </attribute>
       </attributes>
+      <EntityKeys>
+        <EntityKey>
+          <Name>pnfy_TemplateKeyVersion</Name>
+          <LogicalName>pnfy_templatekeyversion</LogicalName>
+          <IntroducedVersion>1.0.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <EntityKeyAttributes>
+            <AttributeName>pnfy_templatekey</AttributeName>
+            <AttributeName>pnfy_version</AttributeName>
+          </EntityKeyAttributes>
+          <displaynames>
+            <displayname description="Template Key and Version" languagecode="1033" />
+          </displaynames>
+        </EntityKey>
+      </EntityKeys>
       <EntitySetName>pnfy_notificationtemplates</EntitySetName>
       <IsDuplicateCheckSupported>0</IsDuplicateCheckSupported>
       <IsBusinessProcessEnabled>0</IsBusinessProcessEnabled>

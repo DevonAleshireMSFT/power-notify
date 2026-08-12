@@ -891,6 +891,21 @@
           </Descriptions>
         </attribute>
       </attributes>
+      <EntityKeys>
+        <EntityKey>
+          <Name>pnfy_DefinitionChannel</Name>
+          <LogicalName>pnfy_definitionchannel</LogicalName>
+          <IntroducedVersion>1.0.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <EntityKeyAttributes>
+            <AttributeName>pnfy_notificationdefinition</AttributeName>
+            <AttributeName>pnfy_channel</AttributeName>
+          </EntityKeyAttributes>
+          <displaynames>
+            <displayname description="Definition and Channel" languagecode="1033" />
+          </displaynames>
+        </EntityKey>
+      </EntityKeys>
       <EntitySetName>pnfy_channelbindings</EntitySetName>
       <IsDuplicateCheckSupported>0</IsDuplicateCheckSupported>
       <IsBusinessProcessEnabled>0</IsBusinessProcessEnabled>

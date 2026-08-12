@@ -18,9 +18,11 @@
 param(
     [string]$ManifestPath = (Join-Path $PSScriptRoot '..\schema\pnfy-columns.csv'),
     [string]$RelationshipPath = (Join-Path $PSScriptRoot '..\schema\pnfy-relationships.csv'),
+    [string]$KeyPath = (Join-Path $PSScriptRoot '..\schema\pnfy-keys.csv'),
     [string]$SolutionRoot = (Join-Path $PSScriptRoot '..\solutions\PowerNotifyCore'),
     # Restricts relationship generation to named relationships, for validating one slice at a time.
-    [string[]]$OnlyRelationship
+    [string[]]$OnlyRelationship,
+    [string[]]$OnlyKey
 )
 
 $ErrorActionPreference = 'Stop'
@@ -389,3 +391,56 @@ if ($indexAdditions.Length -gt 0 -and $PSCmdlet.ShouldProcess($indexPath, 'Regis
 }
 
 Write-Host "Lookups added: $lookupsAdded   relationships added: $relsAdded"
+
+# --- Alternate keys -------------------------------------------------------
+$keys = @()
+if (Test-Path $KeyPath) { $keys = @(Import-Csv -Path $KeyPath) }
+if ($OnlyKey) { $keys = @($keys | Where-Object { $OnlyKey -contains $_.Name.Trim() }) }
+$keysAdded = 0
+
+foreach ($keyGroup in $keys | Group-Object Table) {
+    $dir = Get-ChildItem -Path $entitiesRoot -Directory | Where-Object { $_.Name -ieq $keyGroup.Name }
+    if (-not $dir) { throw "No unpacked entity folder for table '$($keyGroup.Name)'" }
+
+    $entityPath = Join-Path $dir.FullName 'Entity.xml'
+    $xml = Get-Content -Path $entityPath -Raw
+
+    $block = [System.Text.StringBuilder]::new()
+    foreach ($key in $keyGroup.Group) {
+        $name = $key.Name.Trim()
+        if ($xml -match [regex]::Escape("<Name>$name</Name>")) { continue }
+        [void]$block.AppendLine("        <EntityKey>")
+        [void]$block.AppendLine("          <Name>$name</Name>")
+        [void]$block.AppendLine("          <LogicalName>$($name.ToLowerInvariant())</LogicalName>")
+        [void]$block.AppendLine("          <IntroducedVersion>1.0.0.0</IntroducedVersion>")
+        [void]$block.AppendLine("          <IsCustomizable>1</IsCustomizable>")
+        [void]$block.AppendLine("          <EntityKeyAttributes>")
+        foreach ($attr in $key.Attributes.Split(';')) {
+            [void]$block.AppendLine("            <AttributeName>$($attr.Trim().ToLowerInvariant())</AttributeName>")
+        }
+        [void]$block.AppendLine("          </EntityKeyAttributes>")
+        [void]$block.AppendLine("          <displaynames>")
+        [void]$block.AppendLine("            <displayname description=`"$(ConvertTo-XmlText $key.DisplayName)`" languagecode=`"1033`" />")
+        [void]$block.AppendLine("          </displaynames>")
+        [void]$block.AppendLine("        </EntityKey>")
+        $keysAdded++
+    }
+    if ($block.Length -eq 0) { continue }
+
+    if ($PSCmdlet.ShouldProcess($entityPath, 'Insert entity keys')) {
+        if ($xml -match '<EntityKeys>') {
+            $idx = $xml.IndexOf('      </EntityKeys>')
+            $updated = $xml.Insert($idx, $block.ToString())
+        } else {
+            # EntityKeys must sit between the attributes block and EntitySetName.
+            $anchor = $xml.IndexOf('      <EntitySetName>')
+            if ($anchor -lt 0) { throw "Could not find EntitySetName in $entityPath" }
+            $wrapped = "      <EntityKeys>`r`n$($block.ToString())      </EntityKeys>`r`n"
+            $updated = $xml.Insert($anchor, $wrapped)
+        }
+        [System.IO.File]::WriteAllText($entityPath, $updated)
+        Write-Host "$($keyGroup.Name): wrote alternate keys"
+    }
+}
+
+Write-Host "Alternate keys added: $keysAdded"

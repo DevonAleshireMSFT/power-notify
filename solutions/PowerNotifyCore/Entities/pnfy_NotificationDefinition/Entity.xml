@@ -1264,6 +1264,20 @@
           </Descriptions>
         </attribute>
       </attributes>
+      <EntityKeys>
+        <EntityKey>
+          <Name>pnfy_MessageKeyUnique</Name>
+          <LogicalName>pnfy_messagekeyunique</LogicalName>
+          <IntroducedVersion>1.0.0.0</IntroducedVersion>
+          <IsCustomizable>1</IsCustomizable>
+          <EntityKeyAttributes>
+            <AttributeName>pnfy_messagekey</AttributeName>
+          </EntityKeyAttributes>
+          <displaynames>
+            <displayname description="Message Key" languagecode="1033" />
+          </displaynames>
+        </EntityKey>
+      </EntityKeys>
       <EntitySetName>pnfy_notificationdefinitions</EntitySetName>
       <IsDuplicateCheckSupported>0</IsDuplicateCheckSupported>
       <IsBusinessProcessEnabled>0</IsBusinessProcessEnabled>
