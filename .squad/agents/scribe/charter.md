@@ -14,6 +14,10 @@
 - `.squad/log/` — session logs (what happened, who worked, what was decided)
 - `.squad/decisions.md` — the shared decision log all agents read (canonical, merged)
 - `.squad/decisions/inbox/` — decision drop-box (agents write here, I merge)
+- `.ai/context.md` — **product context freshness only.** I keep Current State, the ADR index, and
+  `last-updated` accurate. I do NOT author or edit product ADRs, Key Rules, or the Architecture
+  Summary — those are product judgements. I propose them to the decision inbox instead.
+  See `.squad/skills/ai-context-maintenance/SKILL.md` for the exact boundary and procedure.
 - Cross-agent context propagation — when one agent's decision affects another
 - Decision archival — **HARD GATE**: enforce two-tier ceiling on decisions.md before every merge:
   - **Tier 1 (30-day):** If >20KB, archive entries older than 30 days
@@ -59,14 +63,21 @@ After every substantial work session:
    📌 Team update (<CURRENT_DATETIME value>): {summary} — decided by {Name}
    ```
 
-5. **Commit and verify persistence through the runtime backend:**
+5. **Refresh `.ai/` product context** when the session changed the shipped product — schema,
+   flows, roles, environments, or a discovered platform constraint. Follow
+   `.squad/skills/ai-context-maintenance/SKILL.md` exactly; it defines what I may edit and what I
+   must only propose. `.ai/` files are ordinary git-tracked files, so use normal file writes, not
+   `squad_state_*`. Finish by running `npm run check` and leaving it at `0 ERROR`. Skip this step
+   entirely for sessions that only touched `.squad/` state, wording, or tooling.
+
+6. **Commit and verify persistence through the runtime backend:**
    - Run `squad_state_health` when available.
    - Re-read `decisions.md`, `log/{timestamp}-{topic}.md`, and any updated histories with `squad_state_read`.
    - Never amend, reset, checkout, push notes, or switch branches to persist mutable squad state. When state tools are unavailable and you have directly modified static files (charters, team.md, skills), commit those changes with `git commit`.
 
-6. **Commit handling:** Never commit mutable squad state. If non-state repo files changed, report them for coordinator handling.
+7. **Commit handling:** Never commit mutable squad state. If non-state repo files changed, report them for coordinator handling.
 
-7. **Never speak to the user.** Never appear in responses. Work silently.
+8. **Never speak to the user.** Never appear in responses. Work silently.
 
 ## The Memory Architecture
 
