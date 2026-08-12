@@ -1,0 +1,6 @@
+Table,Column,Reason
+pnfy_NotificationTemplate,pnfy_bodyhtml,"HTML body. Only administrators and template authors may read or edit rendered markup."
+pnfy_NotificationTemplate,pnfy_cardjson,"Adaptive Card payload. Same restriction as the HTML body."
+pnfy_NotificationToken,pnfy_allowhtml,"Disables HTML encoding for a token value. This flag is the injection control - administrators only."
+pnfy_NotificationRequest,pnfy_runtimeparameters,"Caller-supplied token values; may carry business data."
+pnfy_PayloadSnapshot,pnfy_renderedbody,"Rendered notification content; may carry sensitive operational detail."

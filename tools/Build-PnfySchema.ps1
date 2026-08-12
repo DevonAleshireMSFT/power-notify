@@ -19,6 +19,7 @@ param(
     [string]$ManifestPath = (Join-Path $PSScriptRoot '..\schema\pnfy-columns.csv'),
     [string]$RelationshipPath = (Join-Path $PSScriptRoot '..\schema\pnfy-relationships.csv'),
     [string]$KeyPath = (Join-Path $PSScriptRoot '..\schema\pnfy-keys.csv'),
+    [string]$SecuredPath = (Join-Path $PSScriptRoot '..\schema\pnfy-secured-columns.csv'),
     [string]$SolutionRoot = (Join-Path $PSScriptRoot '..\solutions\PowerNotifyCore'),
     # Restricts relationship generation to named relationships, for validating one slice at a time.
     [string[]]$OnlyRelationship,
@@ -444,3 +445,37 @@ foreach ($keyGroup in $keys | Group-Object Table) {
 }
 
 Write-Host "Alternate keys added: $keysAdded"
+
+# --- Column security ------------------------------------------------------
+# Unlike everything above, this pass ENFORCES a property on columns that already exist.
+# A column cannot be added to a column security profile unless IsSecured is 1, and that
+# switch is a security control, so the manifest wins over whatever is currently in source.
+$secured = @()
+if (Test-Path $SecuredPath) { $secured = @(Import-Csv -Path $SecuredPath) }
+$securedChanged = 0
+
+foreach ($secGroup in $secured | Group-Object Table) {
+    $dir = Get-ChildItem -Path $entitiesRoot -Directory | Where-Object { $_.Name -ieq $secGroup.Name }
+    if (-not $dir) { throw "No unpacked entity folder for table '$($secGroup.Name)'" }
+
+    $entityPath = Join-Path $dir.FullName 'Entity.xml'
+    $xml = Get-Content -Path $entityPath -Raw
+    $original = $xml
+
+    foreach ($col in $secGroup.Group) {
+        $logical = $col.Column.Trim().ToLowerInvariant()
+        # Scope the edit to this attribute's own block so sibling columns are untouched.
+        $pattern = '(?s)(<attribute PhysicalName="[^"]*">(?:(?!</attribute>).)*?<LogicalName>' +
+                   [regex]::Escape($logical) +
+                   '</LogicalName>(?:(?!</attribute>).)*?)<IsSecured>0</IsSecured>'
+        $xml = [regex]::Replace($xml, $pattern, '${1}<IsSecured>1</IsSecured>')
+    }
+
+    if ($xml -ne $original -and $PSCmdlet.ShouldProcess($entityPath, 'Enable column security')) {
+        [System.IO.File]::WriteAllText($entityPath, $xml)
+        $securedChanged++
+        Write-Host "$($secGroup.Name): enabled column security"
+    }
+}
+
+Write-Host "Tables with column security updated: $securedChanged"
