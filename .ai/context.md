@@ -45,7 +45,9 @@ solutions call through a single contract.
 - ✅ Schema-as-source pipeline: CSV manifests, generator, and a pack/import round trip
 - ✅ Security model — 7 roles and 4 column security profiles, verified in Power Notify DEV
 - ✅ 15 environment variables, fail-closed defaults, no environment-specific values shipped
-- ⏳ Connection references — blocked on the identity decision (see ADR 0008)
+- ⏳ Connection references — identity model now settled (ADR 0008): Dataverse uses a service
+  principal, email uses a shared mailbox with Send As, Teams uses a webhook pending the issue #23
+  spike
 - 🔲 Cloud flows (enqueue contract, dispatcher, channel senders, retry, monitor, purge)
 - 🔲 Forms, views, dashboards, and the administration app sitemap
 - 🔲 Configuration data migration package
@@ -62,7 +64,8 @@ Layers, outermost first:
 - **Configuration** — organization-owned Dataverse tables: notification definitions, channel
   bindings, templates, recipient rules, Teams destinations, tokens, calling applications.
 - **Orchestration** — `PN | Dispatch Notification`, triggered by the queued row, running as the
-  service account. Resolves recipients, renders templates, calls per-channel senders.
+  **application user** backed by a service principal. Resolves recipients, renders templates, calls
+  per-channel senders.
 - **Delivery** — channel sender child flows (email, Teams message, Adaptive Card) behind
   environment-variable capability flags.
 - **Observability** — request, delivery attempt, payload snapshot, and suppression tables, plus
@@ -85,9 +88,14 @@ Delivery is **asynchronous**: the caller receives acceptance, not a delivery out
   not hand-edited solution XML.** The generator is additive and idempotent.
 - **Validate one slice end to end before generating in bulk.** Bulk generation of solution XML has
   repeatedly cost several failed import cycles; one validated example costs one.
-- **Power Notify must deploy without a service account.** DoD service account approval is slow and
-  not guaranteed, so an email-only deployment using an application user and queue-based Dataverse
-  email is a supported mode, not a fallback. See ADR 0008.
+- **Power Notify must deploy without a service *user account*.** Identity is three separate
+  questions, not one (ADR 0008): Dataverse runs as a **service principal**; email sends from a
+  **shared mailbox via Send As**, so the Outlook connection owner can be any ordinary licensed
+  user; Teams uses a **webhook**, so Power Notify holds no Teams identity at all. Do not conflate
+  a service principal with a licensed service user account — they have different approval paths.
+- **Grant Send As through a mail-enabled security group, not to a named person.** Swapping the
+  Outlook connection owner should be a group membership change, never an Exchange ticket. A direct
+  Send As grant to a named user is supported but recreates the lifecycle coupling.
 - **A channel that is unavailable must be recorded, never silently skipped.** Every disabled or
   unresolvable channel produces a delivery attempt with status `Skipped` and a reason. Silence is
   indistinguishable from data loss.
@@ -126,14 +134,19 @@ Delivery is **asynchronous**: the caller receives acceptance, not a delivery out
 - **Global option sets must be declared as root components** in `Other/Solution.xml`, or import fails.
 - **A column cannot be added to a column security profile** unless column security is enabled on
   the column itself.
-- **Flow Bot is not supported in GCC, GCC High, or DoD.** Teams and Adaptive Card posts through the
-  Teams *connector* must use the **User** poster, so messages appear to come from the connection
-  owner. Teams connections are also not shareable and offer no service principal authentication.
-  This constrains the connector only — a Teams **webhook** is a separate, untested path that may
-  restore Teams without a service account. A message whose sender reads "Workflows" does not by
-  itself indicate which mechanism was used, because Microsoft renamed the Flow bot to "Workflows".
-- **The Office 365 Outlook connector sends from the connection owner's mailbox.** No owner mailbox
-  means no email through that connector; the alternative is Dataverse email with a queue sender.
+- **Flow Bot is not supported in GCC, GCC High, or DoD.** This constrains the Teams *connector*
+  only. Power Notify uses the **Teams webhook** path instead (ADR 0008), so it holds no Teams
+  connection reference. A message whose sender reads "Workflows" does not indicate which mechanism
+  produced it, because Microsoft renamed the Flow bot to "Workflows".
+- **A Teams webhook URL is a bearer credential.** Anyone holding it can post to that channel. It
+  belongs in a column-secured field, never plain configuration. The webhook also serves **channels
+  only** — it cannot direct-message an individual — and its receiving workflow is owned by a
+  channel owner, so delivery dies per channel if that person leaves.
+- **The Office 365 Outlook connector sends from the connection owner's mailbox by default**, but
+  `Send an email (V2)` exposes **From (Send as)**, so the visible sender can be a shared mailbox
+  the owner may send as. Use Send As, not Send on Behalf — the latter renders as "owner on behalf
+  of mailbox". Sent items land in the owner's mailbox unless Exchange is configured to copy them
+  to the shared mailbox.
 - **Adaptive Card behaviour in DoD is unverified.** It is gated behind `pnfy_AdaptiveCardsEnabled`
   and needs a hands-on test before being enabled.
 - **The legacy `NotificationGenerator` solution is reference only.** Its web resource contained a
@@ -155,7 +168,7 @@ Product ADRs live in `.ai/adr/` using the path format `.ai/adr/NNNN-title.md`.
 | `0005-table-ownership-model.md` | Config tables organization-owned; log tables team-owned | accepted |
 | `0006-two-solution-layering.md` | Two solutions (Core, Samples), not five | accepted |
 | `0007-schema-as-source.md` | Schema authored as CSV manifests expanded into solution XML | accepted |
-| `0008-deployment-identity-modes.md` | Support deployment with and without a service account; Mode B is email-only pending a Teams webhook spike | proposed |
+| `0008-deployment-identity-modes.md` | Dataverse runs as a service principal; email sends from a shared mailbox via Send As; Teams uses a webhook | accepted |
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 adr: 0008
-title: Deployment identity modes - with and without a service account
-status: proposed
+title: Deployment identity model - Dataverse, email sender, and Teams
+status: accepted
 date: 2026-08-12
 deciders: Devon Aleshire
 reviewers: Devon Aleshire
@@ -10,112 +10,141 @@ supersedes: null
 superseded-by: null
 ---
 
-# 0008 — Deployment identity modes: with and without a service account
+# 0008 — Deployment identity model: Dataverse, email sender, and Teams
 
 ## Context
 
-Power Notify's flows need an identity to own connection references. The natural answer is a
-dedicated service account, and that is what the architecture has assumed so far.
+Power Notify's flows need identities to own their connection references. "Do we have a service
+account?" looked like one question. It is three, and they have different answers.
 
-In DoD environments, service account approval is slow and not guaranteed. Power Notify must
-therefore be deployable **without** one, not merely degrade if one is unavailable.
+The confusing term is **service account**. It conflates two things with very different approval
+paths:
 
-Three platform facts constrain the options, and they are the reason this is an architectural
-decision rather than an operations detail:
+- a **service principal** — an Entra app registration with no licence, no mailbox, no interactive
+  sign-in, and no human owner of record
+- a **service user account** — a licensed account with a mailbox, subject to MFA and conditional
+  access policy, owned by a named person
 
-1. **Flow Bot is not supported in GCC, GCC High, or DoD.** Teams and Adaptive Card posts must use
-   the `User` poster, so the message visibly comes from whoever owns the connection.
-2. **The Microsoft Teams connector authenticates only as a signed-in user.** Its documented
-   authentication types are all user logins, and the connection is explicitly **not shareable**.
-   There is no service principal option. This constrains the *connector*; it does not constrain
-   the webhook path described below.
-3. **The Office 365 Outlook connector sends from the connection owner's mailbox.** No owner
-   mailbox, no email.
+DoD approval friction is largely against the second. Treating the two as one thing caused an
+earlier revision of this ADR to overstate its constraints.
 
-A named human owner is not an ideal substitute in either mode: delivery breaks the moment that
-person changes role or leaves.
+### Platform facts
 
-**Observed rendering, 2026-08-12.** With the User poster, a card does not masquerade as a personal
+1. **The Dataverse connector accepts service principal authentication in DoD.** Confirmed
+   2026-08-13. This was previously an open question and is now settled.
+2. **The Office 365 Outlook connector sends from the connection owner's mailbox** — but the
+   `Send an email (V2)` action exposes a **From (Send as)** parameter, so the visible sender can be
+   a different mailbox that the owner is permitted to send as.
+3. **The Microsoft Teams connector authenticates only as a signed-in user.** Its authentication
+   types are all user logins and the connection is explicitly **not shareable**. This constrains
+   the *connector*; it does not constrain the webhook path.
+4. **Flow Bot is not supported in GCC, GCC High, or DoD.** Teams posts through the connector must
+   use the `User` poster.
+
+**Observed rendering, 2026-08-12.** With the User poster a card does not masquerade as a personal
 message. It renders as the **Workflows app** attributed *on behalf of* the connection owner, so the
 automation framing stays visible. One observed message showed the sender as the unresolved token
-`botcards_sent_on_behalf_of_user_display_name`, which both confirms the on-behalf-of mechanism and
-suggests the attributed identity's display name should be set deliberately - a service account with
-a blank or unhelpful display name will surface that way to end users.
-
-This weakens, but does not remove, the objection to a human owner: attribution is honest, yet the
-lifecycle problem remains.
+`botcards_sent_on_behalf_of_user_display_name`, which confirms the on-behalf-of mechanism and shows
+that the attributed identity's display name must be set deliberately or it surfaces to end users.
 
 ## Decision
 
-Treat identity as a **deployment mode**, and make channel availability a documented function of
-that mode rather than something discovered at run time.
+Treat identity as **three independent questions**, not one deployment mode switch.
 
-### Mode A — service account available
+### 1. Dataverse identity — service principal
 
-The service account owns all three connection references. Every channel is available. This is the
-preferred mode where the account can be approved.
+All Dataverse access runs as an **application user backed by a service principal**, assigned the
+`pnfy Service` role. No licence, no mailbox, no interactive sign-in, no personal owner.
 
-### Mode B — no service account
+This covers enqueue, dispatch, delivery-attempt logging, payload snapshots, retry, the stuck
+request monitor, and purge — the entire spine of the product.
 
-| Concern | Mechanism |
-|---|---|
-| Dataverse access | **Application user (service principal).** No license, no mailbox. The Dataverse connector supports service principal authentication |
-| Email | **Dataverse email with a queue as sender**, via server-side sync. No connector and no mailbox-owning user; a queue is a Dataverse record, not an account |
-| Teams / Adaptive Card | **Not available via the Teams connector.** A **Teams webhook** is a candidate and is not yet ruled out - see below |
+### 2. Email sender identity — shared mailbox with Send As
 
-### The Teams webhook path (candidate, unverified)
+The Outlook connection must be owned by a licensed user; the connector cannot escape user auth.
+But the **visible sender is decoupled from the connection owner** through `From (Send as)`.
 
-The `When a Teams webhook request is received` trigger is installed in a target channel and posts
-adaptive cards there. Power Notify would only make an HTTP POST to a URL, which means:
+- **Connection owner** — any ordinary licensed user. Not a special account.
+- **Visible sender** — a **shared mailbox**, unlicensed under 50 GB, owned by the team rather than
+  by a person.
 
-- **No Teams connection reference at all**, so no service account and no non-shareable connection
-- The webhook URL is configuration data and fits `pnfy_teamsdestination` naturally
-- Identity is decentralised: the receiving flow is owned by a channel owner, not by Power Notify
+Two ways to grant the permission:
 
-**Do not treat this as free.** A Teams webhook URL is a bearer credential: anyone holding it can
-post to that channel. This project has already been burned once by a callable URL committed as if
-it were configuration. If this path is adopted, the URL must be held in a **Secret**-type
-environment variable or Key Vault, never a plain text column, and the trigger's authentication
-option must be set to something narrower than "Anyone".
+| Option | How | Trade-off |
+|---|---|---|
+| **Mail-enabled security group** *(recommended)* | Grant **Send As** on the shared mailbox to a mail-enabled security group; the connection owner is a member | Swapping the connection owner becomes a group membership change — no Exchange ticket, no waiting on an admin |
+| **Direct Send As** | Grant **Send As** on the shared mailbox to the named connection owner | Fewer moving parts to set up, but every owner change needs an Exchange administrator |
 
-Until this is tested in the target cloud, Mode B should be planned as **email-only**, with Teams
-treated as a likely addition rather than a confirmed one.
+Prefer the group. The direct grant is supported and is reasonable for a single small deployment
+where no group exists yet, but it recreates the lifecycle coupling this decision exists to remove.
 
-A new environment variable selects the email transport:
+Use **Send As**, not **Send on Behalf** — the latter renders as "owner on behalf of mailbox".
 
-- `pnfy_EmailTransport` — Text — values `Connector` or `DataverseEmail`. No default; it must be a
-  conscious per-environment choice.
+### 3. Teams identity — webhook, not connector
+
+Teams delivery uses the **`When a Teams webhook request is received`** path. A channel owner
+installs a receiving workflow in their channel; Power Notify makes an HTTP POST to the resulting
+URL. Power Notify therefore holds **no Teams connection reference and no Teams identity at all**.
+
+This is **approved in principle and unverified in practice**. Until the spike passes, Teams stays
+gated behind `pnfy_TeamsEnabled`, which already defaults to `no`.
+
+### The webhook trade-offs
+
+Adopting the webhook does not make Teams free:
+
+- **The URL is a bearer credential.** Anyone holding it can post to that channel. It must never sit
+  in an unsecured column. This project has already been burned once by a callable URL committed as
+  if it were configuration.
+- **Lifecycle moves, it does not vanish.** The receiving workflow is owned by an individual channel
+  owner. If that person leaves, the channel's delivery dies — and it fails per channel, which is
+  harder to notice than one central connection breaking.
+- **Per-channel setup burden.** Every target channel needs a human to install a workflow. One
+  connector connection reaches many channels; this does not.
+- **Channels only.** The webhook cannot deliver a direct message to an individual.
+- **The HTTP action is premium.**
 
 ## Consequences
 
-- **The existing fail-closed defaults already accommodate Mode B.** `pnfy_TeamsEnabled` and
-  `pnfy_AdaptiveCardsEnabled` default to `no`, so a Mode B environment is correct out of the box
-  and a Mode A environment is the one that must consciously opt in. This was not designed for
-  this purpose but happens to be exactly right.
+- **Only one email transport gets built.** `pnfy_EmailTransport` was introduced to allow a
+  Dataverse-email-with-queue path that existed solely to avoid the mailbox-owner problem. Send As
+  solves that problem better. Implement `Connector` only. Keep the environment variable as a seam,
+  and make the dispatcher **fail loudly** on any unimplemented value — a silent skip would violate
+  the recorded-outcome rule below.
+- **The sender address is configuration data, not a single environment variable.** One environment
+  may serve several teams or commands, each with its own mailbox. This requires:
+  - `pnfy_DefaultSenderAddress` — the environment default
+  - a sender override column on `pnfy_CallingApplication`
+- **`pnfy_TeamsDestination` needs schema changes.** `pnfy_teamid` and `pnfy_channelid` are
+  currently **required**, which a webhook-only destination cannot satisfy. This requires:
+  - a destination-type discriminator so a row declares connector or webhook
+  - a webhook URL column, **column-secured**, because the URL is a credential
+  - relaxing `pnfy_teamid` and `pnfy_channelid` to optional
+- **The dispatcher no longer "runs as the service account."** It runs as the application user.
+- **The existing fail-closed defaults already fit.** `pnfy_TeamsEnabled` and
+  `pnfy_AdaptiveCardsEnabled` default to `no`, so an environment where the Teams spike has not been
+  completed is correct out of the box.
 - The dispatcher must treat "channel disabled" as a **first-class, recorded outcome** — a delivery
-  attempt with status `Skipped` and a reason — not a silent no-op. Otherwise Mode B looks like
-  data loss.
-- Two email code paths must be built and tested. The Dataverse email path is not a fallback bolted
-  on later; it is a supported transport with its own test evidence.
+  attempt with status `Skipped` and a reason — not a silent no-op. Silence is indistinguishable
+  from data loss.
 - Consumers must not assume a channel exists. The runtime contract already returns acceptance
   rather than delivery outcome (ADR 0003), so this does not change the contract — but the consumer
   onboarding guide must state that channel availability is environment-dependent.
-- Queue-based email requires server-side sync configuration in the target environment. That is a
-  human, environment-specific setup step, and it is on the deployment checklist rather than in the
-  solution.
+- **Sent items land in the connection owner's mailbox** unless Exchange is configured to copy them
+  to the shared mailbox. Configure it, or the sent-mail audit trail scatters across individuals.
 
 ## Open questions
 
 These are unverified and must not be assumed:
 
-1. Does the Dataverse connector accept service principal authentication for connection references
-   in **DoD** specifically? Verified behaviour in commercial does not transfer.
-2. Is server-side sync with a queue mailbox approved and available in the target DoD environment?
-3. Does the `When a Teams webhook request is received` path work in the target cloud, and is it
-   approvable? If yes, Mode B gains Teams and the biggest limitation in this ADR disappears. Note
-   that "Workflows" appearing as the sender does **not** by itself prove which mechanism was used:
-   Microsoft renamed the Flow bot to "Workflows" in Teams, so the Flow Bot poster, the User
-   poster, and the webhook path can all surface under that name.
-4. Is there an approved Graph-based path for Teams posting via an app registration? This would
-   need the HTTP with Microsoft Entra ID connector and `ChannelMessage.Send` application
-   permission, and is likely to face the same approval friction as a service account.
+1. Does the `When a Teams webhook request is received` path work in GCC High and DoD, and is it
+   approvable? Tracked as issue #23. Note that "Workflows" appearing as the sender does **not**
+   prove which mechanism was used: Microsoft renamed the Flow bot to "Workflows", so the Flow Bot
+   poster, the User poster, and the webhook path all surface under that name.
+2. Which webhook authentication mode is acceptable — `Anyone`, any user in the tenant, or specific
+   users? Anything stronger than `Anyone` requires Power Notify to present an Entra token, which
+   changes the sender flow from a plain POST into an authenticated call.
+3. Do any recipient rules need Teams **direct messages**? The webhook path serves channels only, so
+   a DM requirement would force the connector back in for that case alone.
+4. Is a shared mailbox with Send As obtainable in the target DoD environment, and can the grant be
+   made to a mail-enabled security group rather than to a named user?
