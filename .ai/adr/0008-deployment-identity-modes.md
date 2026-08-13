@@ -83,19 +83,38 @@ Use **Send As**, not **Send on Behalf** — the latter renders as "owner on beha
 ### 3. Teams identity — webhook, not connector
 
 Teams delivery uses the **`When a Teams webhook request is received`** path. A channel owner
-installs a receiving workflow in their channel; Power Notify makes an HTTP POST to the resulting
-URL. Power Notify therefore holds **no Teams connection reference and no Teams identity at all**.
+installs a receiving workflow in their channel; Power Notify posts an Adaptive Card to the
+resulting URL. Power Notify therefore holds **no Teams connection reference and no Teams user
+identity**.
 
-This is **approved in principle and unverified in practice**. Until the spike passes, Teams stays
-gated behind `pnfy_TeamsEnabled`, which already defaults to `no`.
+**Verified 2026-08-13, GCC High (GFIM).** A test endpoint exists, is reachable, and enforces
+OAuth — an unauthenticated POST returns:
+
+```
+HTTP 401
+{"error":{"code":"DirectApiAuthorizationRequired",
+          "message":"The OAuth authorization scheme is required."}}
+```
+
+This confirms the endpoint half of the design and **corrects an assumption**: with the
+tenant-restricted trigger mode, the sender is *not* a plain HTTP POST. It must present an Entra
+bearer token. That token can come from the **same service principal** already used for Dataverse,
+so the decision still holds — no user identity is required — but the sender flow needs a token
+acquisition step, and the correct token audience is not yet established.
+
+End-to-end delivery is deliberately **deferred until the sender flow exists**. Until then Teams
+stays gated behind `pnfy_TeamsEnabled`, which already defaults to `no`.
 
 ### The webhook trade-offs
 
 Adopting the webhook does not make Teams free:
 
-- **The URL is a bearer credential.** Anyone holding it can post to that channel. It must never sit
-  in an unsecured column. This project has already been burned once by a callable URL committed as
-  if it were configuration.
+- **Credential exposure depends on the trigger's auth mode.** Under `Anyone` the URL is a bearer
+  credential and anyone holding it can post to the channel. Under the **tenant-restricted** mode
+  observed in GFIM the URL alone is useless without a valid token, which substantially reduces the
+  risk — this is the mode to prefer. Treat the URL as sensitive regardless: store it
+  column-secured, never as plain configuration. This project has already been burned once by a
+  callable URL committed as if it were configuration.
 - **Lifecycle moves, it does not vanish.** The receiving workflow is owned by an individual channel
   owner. If that person leaves, the channel's delivery dies — and it fails per channel, which is
   harder to notice than one central connection breaking.
@@ -137,14 +156,17 @@ Adopting the webhook does not make Teams free:
 
 These are unverified and must not be assumed:
 
-1. Does the `When a Teams webhook request is received` path work in GCC High and DoD, and is it
-   approvable? Tracked as issue #23. Note that "Workflows" appearing as the sender does **not**
-   prove which mechanism was used: Microsoft renamed the Flow bot to "Workflows", so the Flow Bot
-   poster, the User poster, and the webhook path all surface under that name.
-2. Which webhook authentication mode is acceptable — `Anyone`, any user in the tenant, or specific
-   users? Anything stronger than `Anyone` requires Power Notify to present an Entra token, which
-   changes the sender flow from a plain POST into an authenticated call.
-3. Do any recipient rules need Teams **direct messages**? The webhook path serves channels only, so
+1. Does an Adaptive Card actually **render in the channel** when posted? The endpoint accepting a
+   request does not prove the receiving workflow succeeds. The interesting failure is a 2xx with no
+   visible card — check the receiving flow's run history for `BotNotInConversationRoster`, which
+   would mean the webhook does not escape the Flow Bot limitation after all. Tracked as issue #23.
+2. **Which token audience** does the direct-invoke endpoint expect? Candidates tried without a
+   cached token: `service.flow.microsoft.us`, `api.high.powerplatform.microsoft.us`,
+   `high.flow.microsoft.us`, `service.powerapps.us`. Establish this before building the sender.
+3. Can the **Dataverse service principal** obtain that token, or does it need separate consent or
+   an app permission grant?
+4. Does the DoD cloud behave the same as GCC High here? GCC High evidence does not transfer.
+5. Do any recipient rules need Teams **direct messages**? The webhook path serves channels only, so
    a DM requirement would force the connector back in for that case alone.
-4. Is a shared mailbox with Send As obtainable in the target DoD environment, and can the grant be
+6. Is a shared mailbox with Send As obtainable in the target DoD environment, and can the grant be
    made to a mail-enabled security group rather than to a named user?

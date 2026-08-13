@@ -1,0 +1,25 @@
+Record verified webhook endpoint behaviour; correct the plain-POST assumption
+
+Devon supplied a live GFIM webhook endpoint. Probed it rather than deferring entirely.
+
+Verified (GCC High only):
+- The endpoint exists and is reachable.
+- It enforces OAuth. Unauthenticated POST returns 401 DirectApiAuthorizationRequired,
+  so the trigger is tenant-restricted rather than "Anyone".
+
+This corrects an assumption in ADR 0008. The sender is NOT a plain HTTP POST - it must
+present an Entra bearer token. The decision still holds because that token can come from
+the service principal already used for Dataverse, so no user identity is required, but the
+sender flow needs a token-acquisition step that was not in the original design.
+
+It also improves the security posture: under tenant-restricted mode the URL alone is
+useless without a token, so the bearer-credential objection is much weaker than under
+"Anyone". Prefer tenant-restricted. The URL is still stored column-secured either way.
+
+End-to-end delivery deferred until the sender flow exists, per Devon - completing it now
+needs an interactive az login to mint a token and is not worth doing ahead of the build.
+
+Open questions restructured around what actually remains: does a card RENDER (a 2xx does
+not prove the receiving flow succeeded - watch for BotNotInConversationRoster), which token
+audience the endpoint expects, whether the Dataverse SPN can obtain it, and whether DoD
+behaves like GCC High. Evidence recorded on issue #23.

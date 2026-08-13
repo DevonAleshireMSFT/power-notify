@@ -138,10 +138,13 @@ Delivery is **asynchronous**: the caller receives acceptance, not a delivery out
   only. Power Notify uses the **Teams webhook** path instead (ADR 0008), so it holds no Teams
   connection reference. A message whose sender reads "Workflows" does not indicate which mechanism
   produced it, because Microsoft renamed the Flow bot to "Workflows".
-- **A Teams webhook URL is a bearer credential.** Anyone holding it can post to that channel. It
-  belongs in a column-secured field, never plain configuration. The webhook also serves **channels
-  only** — it cannot direct-message an individual — and its receiving workflow is owned by a
-  channel owner, so delivery dies per channel if that person leaves.
+- **A Teams webhook endpoint requires an OAuth token when the trigger is tenant-restricted.**
+  Verified in GFIM 2026-08-13: an unauthenticated POST returns `401 DirectApiAuthorizationRequired`.
+  The sender is therefore not a plain POST — it needs a bearer token, which the existing service
+  principal can supply. Under the looser `Anyone` mode the URL alone *is* the credential. Store the
+  URL column-secured either way. The webhook also serves **channels only** — it cannot
+  direct-message an individual — and its receiving workflow is owned by a channel owner, so
+  delivery dies per channel if that person leaves.
 - **The Office 365 Outlook connector sends from the connection owner's mailbox by default**, but
   `Send an email (V2)` exposes **From (Send as)**, so the visible sender can be a shared mailbox
   the owner may send as. Use Send As, not Send on Behalf — the latter renders as "owner on behalf
