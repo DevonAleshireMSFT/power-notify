@@ -43,9 +43,9 @@ solutions call through a single contract.
   13 global choices, 20 relationships, 7 alternate keys
 - ✅ Column security enabled on the 5 sensitive columns
 - ✅ Schema-as-source pipeline: CSV manifests, generator, and a pack/import round trip
-- ⏳ Security roles and column security profiles — one role and one profile exist in DEV but are
-  not yet added to the `PowerNotifyCore` solution, so they are not in source control
-- 🔲 Environment variables and connection references
+- ✅ Security model — 7 roles and 4 column security profiles, verified in Power Notify DEV
+- ✅ 15 environment variables, fail-closed defaults, no environment-specific values shipped
+- ⏳ Connection references — blocked on the identity decision (see ADR 0008)
 - 🔲 Cloud flows (enqueue contract, dispatcher, channel senders, retry, monitor, purge)
 - 🔲 Forms, views, dashboards, and the administration app sitemap
 - 🔲 Configuration data migration package
@@ -85,6 +85,12 @@ Delivery is **asynchronous**: the caller receives acceptance, not a delivery out
   not hand-edited solution XML.** The generator is additive and idempotent.
 - **Validate one slice end to end before generating in bulk.** Bulk generation of solution XML has
   repeatedly cost several failed import cycles; one validated example costs one.
+- **Power Notify must deploy without a service account.** DoD service account approval is slow and
+  not guaranteed, so an email-only deployment using an application user and queue-based Dataverse
+  email is a supported mode, not a fallback. See ADR 0008.
+- **A channel that is unavailable must be recorded, never silently skipped.** Every disabled or
+  unresolvable channel produces a delivery attempt with status `Skipped` and a reason. Silence is
+  indistinguishable from data loss.
 - **Never hardcode recipients, Teams team or channel IDs, org URLs, or message bodies** in a flow
   or web resource. They are configuration data or environment variables.
 - **Message keys and published templates are immutable.** Retire, never rename. A new template
@@ -122,7 +128,10 @@ Delivery is **asynchronous**: the caller receives acceptance, not a delivery out
   the column itself.
 - **Flow Bot is not supported in GCC, GCC High, or DoD.** Teams and Adaptive Card posts must use
   the **User** poster, so messages appear to come from the service account. Teams connections are
-  also not shareable, so that account must own the connection directly.
+  also not shareable, and the Teams connector offers no service principal authentication — which
+  is why Teams is unavailable in a no-service-account deployment.
+- **The Office 365 Outlook connector sends from the connection owner's mailbox.** No owner mailbox
+  means no email through that connector; the alternative is Dataverse email with a queue sender.
 - **Adaptive Card behaviour in DoD is unverified.** It is gated behind `pnfy_AdaptiveCardsEnabled`
   and needs a hands-on test before being enabled.
 - **The legacy `NotificationGenerator` solution is reference only.** Its web resource contained a
@@ -144,6 +153,7 @@ Product ADRs live in `.ai/adr/` using the path format `.ai/adr/NNNN-title.md`.
 | `0005-table-ownership-model.md` | Config tables organization-owned; log tables team-owned | accepted |
 | `0006-two-solution-layering.md` | Two solutions (Core, Samples), not five | accepted |
 | `0007-schema-as-source.md` | Schema authored as CSV manifests expanded into solution XML | accepted |
+| `0008-deployment-identity-modes.md` | Support deployment with and without a service account; Mode B is email-only | proposed |
 
 ---
 

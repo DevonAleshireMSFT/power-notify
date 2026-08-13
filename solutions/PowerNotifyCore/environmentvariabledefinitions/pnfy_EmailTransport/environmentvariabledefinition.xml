@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="pnfy_EmailTransport">
+  <description default="Email delivery mechanism: Connector uses Office 365 Outlook and sends from the connection owner's mailbox; DataverseEmail uses server-side sync with a queue as sender and needs no service account.">
+    <label description="Email delivery mechanism: Connector uses Office 365 Outlook and sends from the connection owner's mailbox; DataverseEmail uses server-side sync with a queue as sender and needs no service account." languagecode="1033" />
+  </description>
+  <displayname default="Email Transport">
+    <label description="Email Transport" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>1</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>
