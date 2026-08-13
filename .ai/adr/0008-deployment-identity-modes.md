@@ -32,8 +32,18 @@ decision rather than an operations detail:
 3. **The Office 365 Outlook connector sends from the connection owner's mailbox.** No owner
    mailbox, no email.
 
-A named human owner is not an acceptable substitute in either mode: notifications would appear to
-come from an individual, and delivery breaks the moment that person changes role or leaves.
+A named human owner is not an ideal substitute in either mode: delivery breaks the moment that
+person changes role or leaves.
+
+**Observed rendering, 2026-08-12.** With the User poster, a card does not masquerade as a personal
+message. It renders as the **Workflows app** attributed *on behalf of* the connection owner, so the
+automation framing stays visible. One observed message showed the sender as the unresolved token
+`botcards_sent_on_behalf_of_user_display_name`, which both confirms the on-behalf-of mechanism and
+suggests the attributed identity's display name should be set deliberately - a service account with
+a blank or unhelpful display name will surface that way to end users.
+
+This weakens, but does not remove, the objection to a human owner: attribution is honest, yet the
+lifecycle problem remains.
 
 ## Decision
 
