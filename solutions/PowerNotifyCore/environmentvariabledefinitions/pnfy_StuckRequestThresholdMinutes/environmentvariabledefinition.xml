@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_StuckRequestThresholdMinutes">
+  <defaultvalue>60</defaultvalue>
+  <description default="Age after which a queued or processing request is treated as stuck.">
+    <label description="Age after which a queued or processing request is treated as stuck." languagecode="1033" />
+  </description>
+  <displayname default="Stuck Request Threshold Minutes">
+    <label description="Stuck Request Threshold Minutes" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000001</type>
+</environmentvariabledefinition>

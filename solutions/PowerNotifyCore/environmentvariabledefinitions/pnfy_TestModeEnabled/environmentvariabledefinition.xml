@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_TestModeEnabled">
+  <defaultvalue>yes</defaultvalue>
+  <description default="When Yes, every delivery is redirected away from real recipients. Set to No only in production.">
+    <label description="When Yes, every delivery is redirected away from real recipients. Set to No only in production." languagecode="1033" />
+  </description>
+  <displayname default="Test Mode Enabled">
+    <label description="Test Mode Enabled" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000002</type>
+</environmentvariabledefinition>

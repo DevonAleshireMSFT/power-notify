@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_LogRetentionDays">
+  <defaultvalue>30</defaultvalue>
+  <description default="Age at which retained payload snapshots are purged.">
+    <label description="Age at which retained payload snapshots are purged." languagecode="1033" />
+  </description>
+  <displayname default="Log Retention Days">
+    <label description="Log Retention Days" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000001</type>
+</environmentvariabledefinition>

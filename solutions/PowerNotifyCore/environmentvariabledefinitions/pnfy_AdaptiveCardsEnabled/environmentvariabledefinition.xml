@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_AdaptiveCardsEnabled">
+  <defaultvalue>no</defaultvalue>
+  <description default="Master switch for Adaptive Card channels. Unverified in DoD — test before enabling.">
+    <label description="Master switch for Adaptive Card channels. Unverified in DoD — test before enabling." languagecode="1033" />
+  </description>
+  <displayname default="Adaptive Cards Enabled">
+    <label description="Adaptive Cards Enabled" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000002</type>
+</environmentvariabledefinition>

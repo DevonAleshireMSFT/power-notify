@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="pnfy_EnvironmentName">
+  <description default="Short environment label, e.g. DEV. Available as a template token.">
+    <label description="Short environment label, e.g. DEV. Available as a template token." languagecode="1033" />
+  </description>
+  <displayname default="Environment Name">
+    <label description="Environment Name" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

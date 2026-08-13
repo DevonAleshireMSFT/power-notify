@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_DefaultSenderDisplayName">
+  <defaultvalue>Power Notify</defaultvalue>
+  <description default="Friendly sender name shown on outbound messages.">
+    <label description="Friendly sender name shown on outbound messages." languagecode="1033" />
+  </description>
+  <displayname default="Default Sender Display Name">
+    <label description="Default Sender Display Name" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

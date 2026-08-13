@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="pnfy_AppBaseURL">
+  <description default="Base URL used to build deep links. Never hardcode an org URL in a template.">
+    <label description="Base URL used to build deep links. Never hardcode an org URL in a template." languagecode="1033" />
+  </description>
+  <displayname default="App Base URL">
+    <label description="App Base URL" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

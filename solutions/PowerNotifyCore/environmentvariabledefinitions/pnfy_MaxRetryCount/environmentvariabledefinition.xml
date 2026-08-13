@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_MaxRetryCount">
+  <defaultvalue>3</defaultvalue>
+  <description default="Retry ceiling per delivery attempt unless a definition overrides it.">
+    <label description="Retry ceiling per delivery attempt unless a definition overrides it." languagecode="1033" />
+  </description>
+  <displayname default="Max Retry Count">
+    <label description="Max Retry Count" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000001</type>
+</environmentvariabledefinition>

@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_TeamsEnabled">
+  <defaultvalue>no</defaultvalue>
+  <description default="Master switch for Teams channels. Requires the service account to own the Teams connection.">
+    <label description="Master switch for Teams channels. Requires the service account to own the Teams connection." languagecode="1033" />
+  </description>
+  <displayname default="Teams Enabled">
+    <label description="Teams Enabled" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000002</type>
+</environmentvariabledefinition>

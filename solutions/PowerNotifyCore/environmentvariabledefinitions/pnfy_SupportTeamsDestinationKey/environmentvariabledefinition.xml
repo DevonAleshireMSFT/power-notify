@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="pnfy_SupportTeamsDestinationKey">
+  <description default="Destination key that receives failure alerts.">
+    <label description="Destination key that receives failure alerts." languagecode="1033" />
+  </description>
+  <displayname default="Support Teams Destination Key">
+    <label description="Support Teams Destination Key" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

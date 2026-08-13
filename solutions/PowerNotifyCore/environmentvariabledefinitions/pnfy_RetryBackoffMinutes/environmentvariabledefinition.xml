@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_RetryBackoffMinutes">
+  <defaultvalue>15</defaultvalue>
+  <description default="Base interval for exponential retry backoff.">
+    <label description="Base interval for exponential retry backoff." languagecode="1033" />
+  </description>
+  <displayname default="Retry Backoff Minutes">
+    <label description="Retry Backoff Minutes" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000001</type>
+</environmentvariabledefinition>

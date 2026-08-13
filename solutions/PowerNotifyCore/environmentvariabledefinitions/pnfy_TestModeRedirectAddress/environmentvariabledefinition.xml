@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="pnfy_TestModeRedirectAddress">
+  <description default="Address that receives all deliveries while test mode is on.">
+    <label description="Address that receives all deliveries while test mode is on." languagecode="1033" />
+  </description>
+  <displayname default="Test Mode Redirect Address">
+    <label description="Test Mode Redirect Address" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

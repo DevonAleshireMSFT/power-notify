@@ -1,0 +1,13 @@
+<environmentvariabledefinition schemaname="pnfy_EnvironmentBannerPrefix">
+  <description default="Prefix added to subjects outside production, e.g. [DEV] . Leave empty in production.">
+    <label description="Prefix added to subjects outside production, e.g. [DEV] . Leave empty in production." languagecode="1033" />
+  </description>
+  <displayname default="Environment Banner Prefix">
+    <label description="Environment Banner Prefix" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000000</type>
+</environmentvariabledefinition>

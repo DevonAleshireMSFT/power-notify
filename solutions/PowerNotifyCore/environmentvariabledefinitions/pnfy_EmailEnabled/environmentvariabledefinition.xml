@@ -1,0 +1,14 @@
+<environmentvariabledefinition schemaname="pnfy_EmailEnabled">
+  <defaultvalue>yes</defaultvalue>
+  <description default="Master switch for the email channel. When No, email deliveries are skipped and recorded.">
+    <label description="Master switch for the email channel. When No, email deliveries are skipped and recorded." languagecode="1033" />
+  </description>
+  <displayname default="Email Enabled">
+    <label description="Email Enabled" languagecode="1033" />
+  </displayname>
+  <introducedversion>1.0.0.0</introducedversion>
+  <iscustomizable>1</iscustomizable>
+  <isrequired>0</isrequired>
+  <secretstore>0</secretstore>
+  <type>100000002</type>
+</environmentvariabledefinition>
