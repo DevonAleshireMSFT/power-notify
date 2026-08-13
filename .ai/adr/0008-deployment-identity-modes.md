@@ -27,7 +27,8 @@ decision rather than an operations detail:
    the `User` poster, so the message visibly comes from whoever owns the connection.
 2. **The Microsoft Teams connector authenticates only as a signed-in user.** Its documented
    authentication types are all user logins, and the connection is explicitly **not shareable**.
-   There is no service principal option.
+   There is no service principal option. This constrains the *connector*; it does not constrain
+   the webhook path described below.
 3. **The Office 365 Outlook connector sends from the connection owner's mailbox.** No owner
    mailbox, no email.
 
@@ -50,11 +51,25 @@ preferred mode where the account can be approved.
 |---|---|
 | Dataverse access | **Application user (service principal).** No license, no mailbox. The Dataverse connector supports service principal authentication |
 | Email | **Dataverse email with a queue as sender**, via server-side sync. No connector and no mailbox-owning user; a queue is a Dataverse record, not an account |
-| Teams / Adaptive Card | **Not available.** No mechanism posts to Teams without a user identity, given facts 1 and 2 above |
+| Teams / Adaptive Card | **Not available via the Teams connector.** A **Teams webhook** is a candidate and is not yet ruled out - see below |
 
-Mode B therefore ships as an **email-only** deployment. That is a real capability reduction and
-should be stated plainly to consumers rather than discovered when a Teams notification silently
-never arrives.
+### The Teams webhook path (candidate, unverified)
+
+The `When a Teams webhook request is received` trigger is installed in a target channel and posts
+adaptive cards there. Power Notify would only make an HTTP POST to a URL, which means:
+
+- **No Teams connection reference at all**, so no service account and no non-shareable connection
+- The webhook URL is configuration data and fits `pnfy_teamsdestination` naturally
+- Identity is decentralised: the receiving flow is owned by a channel owner, not by Power Notify
+
+**Do not treat this as free.** A Teams webhook URL is a bearer credential: anyone holding it can
+post to that channel. This project has already been burned once by a callable URL committed as if
+it were configuration. If this path is adopted, the URL must be held in a **Secret**-type
+environment variable or Key Vault, never a plain text column, and the trigger's authentication
+option must be set to something narrower than "Anyone".
+
+Until this is tested in the target cloud, Mode B should be planned as **email-only**, with Teams
+treated as a likely addition rather than a confirmed one.
 
 A new environment variable selects the email transport:
 
@@ -86,7 +101,11 @@ These are unverified and must not be assumed:
 1. Does the Dataverse connector accept service principal authentication for connection references
    in **DoD** specifically? Verified behaviour in commercial does not transfer.
 2. Is server-side sync with a queue mailbox approved and available in the target DoD environment?
-3. Is there an approved Graph-based path for Teams posting via an app registration that would
-   restore Teams in Mode B? This would need the HTTP with Microsoft Entra ID connector and
-   `ChannelMessage.Send` application permission, and is likely to face the same approval friction
-   as a service account.
+3. Does the `When a Teams webhook request is received` path work in the target cloud, and is it
+   approvable? If yes, Mode B gains Teams and the biggest limitation in this ADR disappears. Note
+   that "Workflows" appearing as the sender does **not** by itself prove which mechanism was used:
+   Microsoft renamed the Flow bot to "Workflows" in Teams, so the Flow Bot poster, the User
+   poster, and the webhook path can all surface under that name.
+4. Is there an approved Graph-based path for Teams posting via an app registration? This would
+   need the HTTP with Microsoft Entra ID connector and `ChannelMessage.Send` application
+   permission, and is likely to face the same approval friction as a service account.

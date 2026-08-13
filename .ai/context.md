@@ -126,10 +126,12 @@ Delivery is **asynchronous**: the caller receives acceptance, not a delivery out
 - **Global option sets must be declared as root components** in `Other/Solution.xml`, or import fails.
 - **A column cannot be added to a column security profile** unless column security is enabled on
   the column itself.
-- **Flow Bot is not supported in GCC, GCC High, or DoD.** Teams and Adaptive Card posts must use
-  the **User** poster, so messages appear to come from the service account. Teams connections are
-  also not shareable, and the Teams connector offers no service principal authentication — which
-  is why Teams is unavailable in a no-service-account deployment.
+- **Flow Bot is not supported in GCC, GCC High, or DoD.** Teams and Adaptive Card posts through the
+  Teams *connector* must use the **User** poster, so messages appear to come from the connection
+  owner. Teams connections are also not shareable and offer no service principal authentication.
+  This constrains the connector only — a Teams **webhook** is a separate, untested path that may
+  restore Teams without a service account. A message whose sender reads "Workflows" does not by
+  itself indicate which mechanism was used, because Microsoft renamed the Flow bot to "Workflows".
 - **The Office 365 Outlook connector sends from the connection owner's mailbox.** No owner mailbox
   means no email through that connector; the alternative is Dataverse email with a queue sender.
 - **Adaptive Card behaviour in DoD is unverified.** It is gated behind `pnfy_AdaptiveCardsEnabled`
@@ -153,7 +155,7 @@ Product ADRs live in `.ai/adr/` using the path format `.ai/adr/NNNN-title.md`.
 | `0005-table-ownership-model.md` | Config tables organization-owned; log tables team-owned | accepted |
 | `0006-two-solution-layering.md` | Two solutions (Core, Samples), not five | accepted |
 | `0007-schema-as-source.md` | Schema authored as CSV manifests expanded into solution XML | accepted |
-| `0008-deployment-identity-modes.md` | Support deployment with and without a service account; Mode B is email-only | proposed |
+| `0008-deployment-identity-modes.md` | Support deployment with and without a service account; Mode B is email-only pending a Teams webhook spike | proposed |
 
 ---
 
